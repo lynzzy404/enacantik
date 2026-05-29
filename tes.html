@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy birthday, Ena!</title>
+    <link rel="icon" type="image/jpeg" href="images/foto-sekian.jpg">
+    <!-- Tailwind CSS (v4 CDN via Play) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Kita tambahkan &family=Caveat:wght@400..700 ke dalam bundle Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Quicksand:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- GSAP Core & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        /* 1.1 Palette Warna Resmi & Variabel */
+        :root {
+            --bg-main: #141112;
+            --bg-layer: #2e1619;
+            --accent-pink: #f7cad0;
+            --accent-pink-dark: #f9bec7;
+            --border-crimson: #c67570;
+            --text-chalk: #fff0f3;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            /* Background Texture Malam Berbintang */
+            background-image:
+                radial-gradient(1px 1px at 20px 30px, rgba(247, 202, 208, 0.4), rgba(0, 0, 0, 0)),
+                radial-gradient(1px 1px at 75px 120px, rgba(247, 202, 208, 0.3), rgba(0, 0, 0, 0)),
+                radial-gradient(1.5px 1.5px at 140px 70px, rgba(247, 202, 208, 0.5), rgba(0, 0, 0, 0)),
+                radial-gradient(2px 2px at 250px 190px, rgba(247, 202, 208, 0.35), rgba(0, 0, 0, 0)),
+                radial-gradient(circle at 50% 50%, rgba(46, 22, 25, 0.3) 0%, rgba(20, 17, 18, 0) 70%);
+            background-size: 300px 300px, 400px 400px, 350px 350px, 500px 500px, 100% 100%;
+            background-attachment: fixed;
+            color: var(--text-chalk);
+            font-family: 'DM Sans', 'Quicksand', sans-serif;
+            line-height: 1.75;
+            overflow: hidden;
+            /* DIUBAH DARI HIDDEN KE AUTO */
+            /* Dikunci di awal */
+        }
+
+        /* ==================== GLOBAL AMBIENT LOVE PARTICLES (PERBAIKAN) ==================== */
+        .global-heart-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        .heart-particle {
+            position: absolute;
+            color: var(--accent-pink);
+            opacity: 0;
+            font-size: var(--p-size, 14px);
+            will-change: transform, opacity;
+            /* Optimalisasi Akselerasi GPU Anti-Lag */
+        }
+
+        /* Gerakan partikel naik dari bawah ke atas */
+        .heart-up {
+            bottom: -20px;
+            animation: floatParticleUp var(--p-duration, 8s) ease-in-out infinite;
+            animation-delay: var(--p-delay, 0s);
+        }
+
+        /* Gerakan partikel turun dari atas ke bawah */
+        .heart-down {
+            top: -20px;
+            animation: floatParticleDown var(--p-duration, 8s) ease-in-out infinite;
+            animation-delay: var(--p-delay, 0s);
+        }
+
+        @keyframes floatParticleUp {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: var(--p-opacity, 0.4);
+            }
+
+            90% {
+                opacity: var(--p-opacity, 0.4);
+            }
+
+            100% {
+                transform: translate3d(var(--p-drift, 40px), -105vh, 0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes floatParticleDown {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: var(--p-opacity, 0.4);
+            }
+
+            90% {
+                opacity: var(--p-opacity, 0.4);
+            }
+
+            100% {
+                transform: translate3d(var(--p-drift, -40px), 105vh, 0) rotate(-360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Optimasi Kinerja Animasi Bunga Jatuh Berputar */
+        .falling-flower {
+            position: fixed;
+            top: -50px;
+            z-index: 99;
+            pointer-events: none;
+            will-change: transform, opacity;
+        }
+
+/* 1.2 Sistem Tipografi */
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            /* Font rendering smoothing biar lekukannya halus di layar */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+.font-vibes {
+            /* Kita ganti ke Caveat, kasih font-size adjustment biar langsung auto-proporsional */
+            font-family: 'Caveat', cursive;
+            font-size: 1.25em; /* Menaikkan sedikit skala font khusus untuk tulisan tangan agar jelas */
+            font-weight: 700;  /* Dibuat bold (700) biar garis hurufnya tegas di layar HP */
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-quicksand {
+            font-family: 'Quicksand', sans-serif;
+            letter-spacing: 0.3px;
+            line-height: 1.6; /* Nyaman banget buat teks panjang/paragraph */
+        }
+
+        .font-dm {
+            font-family: 'DM Sans', sans-serif;
+            letter-spacing: 0.2px;
+            line-height: 1.5;
+        }
+
+         /* 2.1 State Management */
+        #page-1,
+        #page-2,
+        #page-3,
+        #page-4,
+        #page-5 {
+            display: none;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .buka-flex {
+            display: flex !important;
+            visibility: visible !important;
+        }
+
+        .buka-block {
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        /* 3.1 Page 0 Animasi Kado Idle */
+        @keyframes denyutKado {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .animate-denyut {
+            animation: denyutKado 1.5s infinite ease-in-out;
+        }
+
+        /* 3.5 Scrapbook UI CSS */
+        .glass-panel {
+            background: rgba(26, 14, 16, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(198, 117, 112, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Haptic Shake untuk Stoples */
+        @keyframes shake {
+            0% {
+                transform: translate(1px, 1px) rotate(0deg);
+            }
+
+            10% {
+                transform: translate(-1px, -2px) rotate(-1deg);
+            }
+
+            20% {
+                transform: translate(-3px, 0px) rotate(1deg);
+            }
+
+            30% {
+                transform: translate(3px, 2px) rotate(0deg);
+            }
+
+            40% {
+                transform: translate(1px, -1px) rotate(1deg);
+            }
+
+            50% {
+                transform: translate(-1px, 2px) rotate(-1deg);
+            }
+
+            60% {
+                transform: translate(-3px, 1px) rotate(0deg);
+            }
+
+            70% {
+                transform: translate(3px, 1px) rotate(-1deg);
+            }
+
+            80% {
+                transform: translate(-1px, -1px) rotate(1deg);
+            }
+
+            90% {
+                transform: translate(1px, 2px) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(1px, -2px) rotate(-1deg);
+            }
+        }
+
+        .anim-shake {
+            animation: shake 0.5s;
+        }
+
+        /* Polaroid 3D Flip */
+        .perspective-1200 {
+            perspective: 1200px;
+        }
+
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        #music-toggle {
+            transition: all 0.3s ease;
+        }
+
+        #music-toggle.playing {
+            box-shadow: 0 0 15px var(--accent-pink);
+        }
+
+        .polaroid-wrapper {
+            transition: transform 0.5s ease-out;
+        }
+
+        .polaroid-card {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .washi-tape {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-5deg);
+            width: 80px;
+            height: 22px;
+            background: rgba(247, 202, 208, 0.4);
+            backdrop-filter: blur(2px);
+            border-left: 2px dashed rgba(255, 255, 255, 0.5);
+            border-right: 2px dashed rgba(255, 255, 255, 0.5);
+            z-index: 10;
+        }
+
+        /* Maze Game */
+        #maze-container {
+            touch-action: none;
+            background-image: radial-gradient(circle at 2px 2px, rgba(198, 117, 112, 0.2) 1px, transparent 0);
+            background-size: 20px 20px;
+        }
+
+        .maze-wall {
+            background-color: var(--border-crimson);
+            position: absolute;
+            border-radius: 4px;
+            box-shadow: 0 0 8px rgba(198, 117, 112, 0.5);
+        }
+
+        /* Page 5 Ambient Hearts */
+        .ambient-heart {
+            position: fixed;
+            bottom: -50px;
+            pointer-events: none;
+            color: var(--accent-pink);
+            font-size: 20px;
+            opacity: 0.6;
+            animation: floatUp linear forwards;
+            z-index: 25;
+        }
+
+        @keyframes floatUp {
+            to {
+                transform: translateY(-115vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        #teks-surat {
+            font-family: 'DM Sans', sans-serif;
+            color: #fff0f3;
+            font-size: 11px; /* Ukuran font kecil untuk efek ketikan yang lebih dramatis */
+            line-height: 1.6;
+            
+            /* KUNCI UTAMA: Memaksa browser merender \n dari JavaScript menjadi pindah baris */
+            white-space: pre-line; 
+            
+            /* Tambahan biar rapi di HP */
+            word-break: break-word; 
+            text-align: left;
+        }
+
+        .cursor-blink::after {
+            content: '|';
+            animation: blink 1s step-start infinite;
+            color: var(--accent-pink);
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #141112;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2e1619;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c67570;
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-[#f7cad0] selection:text-[#2e1619] min-h-screen relative">
+
+    <!-- Custom Notifikasi Toast -->
+    <!-- Custom Notification Toast Wrapper (Centered & Mobile Friendly) -->
+    <div id="custom-toast"
+        class="fixed top-5 left-1/2 -translate-x-1/2 z-[100] pointer-events-none hidden opacity-0 w-full max-w-[90vw] px-4 flex justify-center">
+        <!-- Ditambahkan text-center, flex-col untuk responsivitas ikon, dan lebar otomatis -->
+        <div
+            class="glass-panel px-5 py-3.5 rounded-xl shadow-2xl border-[#c67570] flex flex-col sm:flex-row items-center justify-center gap-2 text-center w-full sm:w-auto">
+            <span id="toast-icon" class="text-xl">✨</span>
+            <p id="toast-text"
+                class="font-dm text-xs md:text-sm text-[#fff0f3] leading-relaxed font-medium text-center"></p>
+        </div>
+    </div>
+
+    <!-- Global Background Particle Love Layer (PERBAIKAN AGAR TIDAK FLAT) -->
+    <div class="global-heart-container" id="global-particles">
+        <!-- Loop otomatis via JS untuk menghasilkan kombinasi partikel atas-bawah yang super ringan -->
+    </div>
+
+    <!-- Background Audio -->
+    <audio id="bgm" loop preload="auto">
+        <source src="lagu1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ==================== PAGE 0: WELCOME SCREEN ==================== -->
+    <div id="page-0" class="fixed inset-0 flex flex-col items-center justify-center z-50 px-4">
+        <div id="gift-box"
+            class="text-6xl sm:text-8xl md:text-9xl cursor-pointer animate-denyut select-none drop-shadow-2xl hover:scale-110 transition-transform">
+            🎁
+        </div>
+        <p id="tap-hint"
+            class="mt-8 font-quicksand text-xs sm:text-sm tracking-[0.2em] text-[#f7cad0]/80 uppercase text-center">TAP
+            KADO NYA
+            YA SAYANGGGG!</p>
+    </div>
+
+    <!-- ==================== PAGE 1: AKSES TERBATAS (LOGIN) ==================== -->
+    <div id="page-1" class="fixed inset-0 z-40 items-center justify-center px-4">
+        <div class="glass-panel p-6 sm:p-8 rounded-2xl w-full max-w-sm text-center relative overflow-hidden">
+            <div
+                class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#c67570] to-transparent">
+            </div>
+
+            <div class="mx-auto w-16 h-16 mb-4 text-[#f7cad0]">
+                <svg stroke="currentColor" fill="none" stroke-width="1.5" viewBox="0 0 24 24" class="w-full h-full">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </div>
+
+            <h1 class="font-playfair italic text-2xl mb-2 text-[#f7cad0]">Akses Terbatas 🔒</h1>
+            <p class="font-dm text-xs mb-1 text-[#f7cad0]/90 tracking-widest uppercase font-medium">Masukkin akses nya
+                duluu ya hehe ^_^
+                <p class="font-dm text-xs text-gray-300 mb-6 leading-relaxed">Cluenya ada dibawah !</p></p>
+
+            <div class="space-y-4 text-left mb-6">
+                <div>
+                    <label
+                        class="font-dm text-[10px] font-semibold text-slate-200 uppercase mb-1 block tracking-wider">Username</label>
+                    <input type="text" id="login-user" placeholder="cobaa tebakk, cluee nya ada dibawah.."
+                        class="w-full px-4 py-3 bg-[#141112]/80 border border-[#c67570]/60 rounded-xl text-sm focus:outline-none focus:border-[#f7cad0] text-center font-dm text-white transition-colors placeholder:text-gray-500">
+                </div>
+                <div>
+                    <label
+                        class="font-dm text-[10px] font-semibold text-slate-200 uppercase mb-1 block tracking-wider">Password</label>
+                    <input type="password" id="login-pass" placeholder="sama dgn username"
+                        class="w-full px-4 py-3 bg-[#141112]/80 border border-[#c67570]/60 rounded-xl text-sm focus:outline-none focus:border-[#f7cad0] text-center font-dm text-white transition-colors placeholder:text-gray-500">
+                </div>
+            </div>
+
+            <p id="login-error"
+                class="font-dm text-sm text-[#f7cad0] mb-4 hidden opacity-0 transition-opacity leading-relaxed">Username
+                atau Password salah! Intip petunjuk kecil di bawah kotak login.</p>
+
+            <button onclick="cekLogin()"
+                class="w-full py-3 bg-[#2e1619] border border-[#c67570] text-[#fff0f3] rounded-xl hover:bg-[#c67570] hover:text-[#141112] transition-all duration-300 font-medium tracking-widest text-sm uppercase cursor-pointer">
+                GASKEN LOGINNYA!
+            </button>
+
+            <div class="mt-6 pt-4 border-t border-[#c67570]/30 text-center">
+                <p class="font-dm text-xs text-gray-300 leading-relaxed">Petunjuknya:<br>Ena
+                    biasa manggil gwehj apa yaa??<span class="font-semibold text-[#f7cad0]"><br>(huruf kecil semuaa yaa
+                        ^_^)</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 2: TYPEWRITER INTRO ==================== -->
+    <div id="page-2" class="fixed inset-0 z-40 items-center justify-center px-4">
+        <div
+            class="w-full max-w-2xl bg-gradient-to-b from-[#2e1619] to-[#141112] p-6 sm:p-8 md:p-12 rounded-xl border border-[#c67570]/30 shadow-2xl relative">
+            <div class="absolute top-4 left-4 w-4 h-4 border-t border-l border-[#c67570]"></div>
+            <div class="absolute top-4 right-4 w-4 h-4 border-t border-r border-[#c67570]"></div>
+            <div class="absolute bottom-4 left-4 w-4 h-4 border-b border-l border-[#c67570]"></div>
+            <div class="absolute bottom-4 right-4 w-4 h-4 border-b border-r border-[#c67570]"></div>
+
+            <h2 class="font-playfair italic text-4xl md:text-5xl text-[#f7cad0] mb-3 text-center">🍂 Sebelum Lanjut..
+            </h2>
+            <div class="min-h-[150px] flex items-center justify-center">
+                <p id="typewriter-text"
+                    class="font-dm text-base md:text-lg leading-[1.9] text-slate-200 text-center tracking-wide cursor-blink">
+                </p>
+            </div>
+
+            <div class="mt-8 flex justify-center">
+                <button id="btn-lanjut-2" onclick="pindahKePage(3)"
+                    class="opacity-0 pointer-events-none px-8 py-3 border border-[#c67570] text-[#f7cad0] rounded-xl hover:bg-[#c67570] hover:text-white transition-all tracking-widest text-xs font-bold cursor-pointer">
+                    LANJYUTTTT
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 3: KUIS TANGGAL LAHIR ==================== -->
+    <div id="page-3" class="fixed inset-0 z-40 items-center justify-center">
+        <div class="glass-panel p-8 rounded-2xl w-[90%] max-w-md text-center">
+
+            <div class="mx-auto w-16 h-16 mb-6 text-[#f7cad0]">
+                <svg stroke="currentColor" fill="none" stroke-width="1.5" viewBox="0 0 24 24" class="w-full h-full">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+            </div>
+
+            <h2 class="font-playfair italic text-2xl mb-2 text-[#fff0f3]">Tanggal Lahir</h2>
+            <p class="font-dm text-sm mb-6 text-gray-300 leading-[1.85]">Sistem keamanan mendeteksi hari ini adalah hari
+                kelahiran seseorang yang sangat berharga<br> bagi pembuat web ini.<br><span class="font-semibold text-[#f7cad0]">Tanggal berapakah itu??</span></p>
+
+            <div class="flex gap-2 justify-center mb-6">
+                <div class="relative inline-block">
+                    <select id="val-tgl"
+                        class="appearance-none w-20 bg-[#141112] border border-[#c67570] text-[#f7cad0] p-3 pr-8 rounded-xl text-sm focus:outline-none focus:border-[#f7cad0] focus:ring-1 focus:ring-[#f7cad0] cursor-pointer transition-all">
+                        <option value="">Tgl</option>
+                        <script>for (let i = 1; i <= 31; i++) document.write(`<option value="${i}">${i}</option>`);</script>
+                    </select>
+                    <div
+                        class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-[#c67570] text-xs">
+                        ▼</div>
+                </div>
+
+                <div class="relative inline-block">
+                    <select id="val-bln"
+                        class="appearance-none w-24 bg-[#141112] border border-[#c67570] text-[#f7cad0] p-3 pr-8 rounded-xl text-sm focus:outline-none focus:border-[#f7cad0] focus:ring-1 focus:ring-[#f7cad0] cursor-pointer transition-all">
+                        <option value="">Bulan</option>
+                        <option value="Januari">Jan</option>
+                        <option value="Februari">Feb</option>
+                        <option value="Maret">Mar</option>
+                        <option value="April">Apr</option>
+                        <option value="Mei">Mei</option>
+                        <option value="Juni">Jun</option>
+                        <option value="Juli">Jul</option>
+                        <option value="Agustus">Agu</option>
+                        <option value="September">Sep</option>
+                        <option value="Oktober">Okt</option>
+                        <option value="November">Nov</option>
+                        <option value="Desember">Des</option>
+                    </select>
+                    <div
+                        class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-[#c67570] text-xs">
+                        ▼</div>
+                </div>
+
+                <div class="relative inline-block">
+                    <select id="val-thn"
+                        class="appearance-none w-24 bg-[#141112] border border-[#c67570] text-[#f7cad0] p-3 pr-8 rounded-xl text-sm focus:outline-none focus:border-[#f7cad0] focus:ring-1 focus:ring-[#f7cad0] cursor-pointer transition-all">
+                        <option value="">Tahun</option>
+                        <script>for (let i = 1995; i <= 2010; i++) document.write(`<option value="${i}">${i}</option>`);</script>
+                    </select>
+                    <div
+                        class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-[#c67570] text-xs">
+                        ▼</div>
+                </div>
+            </div>
+
+            <p id="date-error" class="text-[#f7cad0] text-xs mb-4 hidden font-medium">Yah salah! Masa tanggal lahir
+                sendiri lupa? Coba cek lagi 😜</p>
+
+            <button onclick="cekTanggal()"
+                class="w-full py-3 bg-[#c67570] text-[#141112] rounded-xl font-bold tracking-widest text-xs hover:bg-[#f7cad0] transition-colors cursor-pointer">
+                Gass kita cek tanggalnya!
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 4: AUDIO GATEWAY ==================== -->
+    <div id="page-4"
+        class="fixed inset-0 z-40 items-center justify-center bg-gradient-to-b from-[#141112] via-[#221012] to-[#141112] px-4">
+        <div class="text-center flex flex-col items-center p-4 w-full max-w-md">
+
+            <div
+                class="w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 rounded-full bg-black flex items-center justify-center mb-6 sm:mb-10 shadow-[0_0_40px_rgba(198,117,112,0.5)] animate-[spin_12s_linear_infinite] relative p-1 overflow-hidden group">
+                <div
+                    class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none z-10">
+                </div>
+                <div class="w-full h-full rounded-full border border-zinc-800/60 flex items-center justify-center p-4">
+                    <div
+                        class="w-full h-full rounded-full border border-zinc-700/40 flex items-center justify-center p-5">
+                        <div
+                            class="w-full h-full rounded-full border border-zinc-800/80 flex items-center justify-center p-4">
+                            <div
+                                class="w-16 h-16 rounded-full bg-gradient-to-br from-[#c67570] to-[#2e1619] flex items-center justify-center border-2 border-dashed border-[#141112] shadow-inner">
+                                <img src="images/fotoCD1.jpg" alt="Foto Ena"
+                                    class="absolute w-full h-full rounded-full object-cover p-1 z-10" />
+                                <div class="w-4 h-4 rounded-full bg-[#141112]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="font-playfair italic text-2xl sm:text-3xl md:text-4xl mb-4 text-[#f7cad0] text-center">Persiapan
+                Terakhir... 🎧</h2>
+            <p
+                class="font-dm text-gray-300 max-w-sm text-xs sm:text-sm md:text-base mb-6 sm:mb-8 leading-[1.9] text-center">
+                Siap-siap yaa! setelah ena
+                mengklik tombol di bawah ini, ena akan melihat memori kilas singkat kita bersama<br>cihuyyy.</p>
+
+            <button onclick="bukaScrapbookUtama()"
+                class="px-6 sm:px-8 py-3 sm:py-4 bg-[#d4847f] text-[#fff0f3] rounded-xl font-bold tracking-widest text-xs shadow-lg hover:bg-[#c67570] hover:scale-105 active:scale-95 transition-all flex items-center gap-3 cursor-pointer flex-wrap justify-center">
+                <span>PUTAR MUSIKKK NYAA 🎵</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 5: MAIN SCRAPBOOK ==================== -->
+    <div id="page-5" class="fixed inset-0 z-30 overflow-x-hidden overflow-y-auto">
+        <div class="w-full min-h-screen relative pb-32" id="scrapbook-wrapper">
+
+            <!-- Header Halaman -->
+            <header class="pt-20 pb-6 text-center relative z-10 px-4">
+                <div class="text-xs font-mono tracking-[0.3em] text-[#c67570] uppercase text-center">Interactive
+                    Scrapbook •
+                    Handmade</div>
+<h1 class="font-playfair italic text-4xl sm:text-5xl md:text-6xl lg:text-8xl text-[#f7cad0] drop-shadow-lg mt-3 text-center">
+    Happy 19th<br>level up day, Sayangku! ✨
+</h1>
+                <p
+                    class="font-dm text-sm sm:text-base md:text-lg text-gray-300 mt-5 leading-[1.9] tracking-wide max-w-lg mx-auto text-center">
+                    Selamat menjelajahi mesin waktu kecil kita. Scroll pelan-pelan dan nikmati setiap momen 💗</p>
+            </header>
+
+            <div class="w-full flex items-center justify-center gap-4 my-6 opacity-40 max-w-md mx-auto px-6">
+                <div class="h-[1px] bg-gradient-to-r from-transparent to-[#c67570] flex-1"></div>
+                <span class="text-[#f7cad0] text-[10px]">♦</span>
+                <div class="h-[1px] bg-gradient-to-l from-transparent to-[#c67570] flex-1"></div>
+            </div>
+
+            <!-- Widget 1: Stoples Alasan Cinta -->
+            <section class="max-w-4xl mx-auto py-8 px-6 flex flex-col items-center relative z-10">
+                <div class="glass-panel p-8 md:p-10 rounded-2xl w-full max-w-2xl text-center relative overflow-hidden">
+                    <h2 class="font-playfair italic text-2xl text-[#f7cad0] mb-2 font-bold text-center">Little Jar of Love💖</h2>
+                    <p class="font-dm text-sm text-gray-300 mb-6 leading-relaxed text-center">Ketuk toplesnya untuk
+                        melihat 1 alasan
+                        acak kenapa dudut sayang bgt sama ena ^_^</p>
+
+                    <div id="jar-trigger"
+                        class="cursor-pointer transition-transform hover:scale-105 mb-6 flex justify-center"
+                        onclick="kocokStoples()">
+                        <div
+                            class="w-28 h-36 bg-gradient-to-br from-[#2e1619] to-[#c67570] border-4 border-[#f7cad0] rounded-b-3xl rounded-t-lg relative flex items-center justify-center shadow-lg">
+                            <div class="absolute top-0 w-16 h-3 bg-[#f7cad0] rounded-b-sm border-b border-[#c67570]">
+                            </div>
+                            <span class="text-4xl animate-bounce">🍯</span>
+                        </div>
+                    </div>
+
+                    <div id="box-alasan"
+                        class="bg-[#2e1619]/40 p-6 rounded-xl border border-[#c67570]/30 min-h-[100px] flex items-center justify-center transition-all duration-300">
+                        <p id="text-alasan"
+                            class="font-playfair italic text-lg md:text-xl text-[#fff0f3] leading-relaxed">"Klik toples
+                            di atas untuk melihat kejutan..."</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Widget 2: Tumpukan Memori -->
+            <section class="max-w-5xl mx-auto py-12 px-6 relative z-10">
+                <div class="glass-panel p-8 md:p-10 rounded-2xl w-full">
+                    <h3 class="font-playfair italic text-3xl text-[#f7cad0] mb-3 text-center font-bold">The Memory Stack 📸</h3>
+                    <p class="font-dm text-sm text-gray-300 mb-8 max-w-md mx-auto text-center leading-relaxed">Sedikit kenangan yang ingin kita simpan dan nikmati bersama<br>(Klik kartu untuk melihat kenangannya ^_^).</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10" id="polaroid-grid">
+                        <!-- Card 1 -->
+                        <div class="polaroid-wrapper opacity-0 translate-y-8 perspective-1200 cursor-pointer"
+                            onclick="flipCard(this)">
+                            <div
+                                class="polaroid-card relative w-full aspect-[3/4] transform-style-3d transition-transform duration-700 shadow-2xl">
+                                <div
+                                    class="front absolute w-full h-full backface-hidden bg-[#fff0f3] p-4 pb-16 rounded-lg border border-gray-200">
+                                    <div class="washi-tape"></div>
+                                    <div class="w-full h-full bg-[#2e1619] rounded-lg overflow-hidden relative">
+                                        <img src="images/foto1.jpg" class="w-full h-full object-cover" alt="Memori 1">
+                                        <div class="absolute inset-0 bg-[#2e1619] opacity-20 mix-blend-overlay"></div>
+                                    </div>
+                                    <p
+                                        class="font-vibes text-black text-xl text-center absolute bottom-4 w-full left-0">
+                                        First date, but not first time.</p>
+                                </div>
+                                <div
+                                    class="back absolute w-full h-full backface-hidden rotate-y-180 bg-[#2e1619] p-6 rounded-lg border-2 border-dashed border-[#c67570] flex flex-col items-center justify-center text-center">
+                                    <span class="text-[#f7cad0] font-vibes text-2xl font-bold mb-3 block">- 23 Oktober
+                                        2025 -</span>
+                                    <p class="font-dm text-sm text-[#fff0f3]/90 leading-[1.85]">Lucu ya, sempat sejauh
+                                        itu, tapi akhirnya kita balik ngobrol lagi cuma karna semangkok seblak</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="polaroid-wrapper opacity-0 translate-y-8 perspective-1200 cursor-pointer"
+                            onclick="flipCard(this)">
+                            <div
+                                class="polaroid-card relative w-full aspect-[3/4] transform-style-3d transition-transform duration-700 shadow-2xl">
+                                <div
+                                    class="front absolute w-full h-full backface-hidden bg-[#fff0f3] p-4 pb-16 rounded-lg border border-gray-200">
+                                    <div class="washi-tape"></div>
+                                    <div class="w-full h-full bg-[#2e1619] rounded-lg overflow-hidden relative">
+                                        <img src="images/foto2.jpg" class="w-full h-full object-cover" alt="Memori 2">
+                                        <div class="absolute inset-0 bg-[#2e1619] opacity-20 mix-blend-overlay"></div>
+                                    </div>
+                                    <p
+                                        class="font-vibes text-black text-xl text-center absolute bottom-4 w-full left-0">
+                                        First Day, New Chapter</p>
+                                </div>
+                                <div
+                                    class="back absolute w-full h-full backface-hidden rotate-y-180 bg-[#2e1619] p-6 rounded-lg border-2 border-dashed border-[#c67570] flex flex-col items-center justify-center text-center">
+                                    <span class="text-[#f7cad0] font-vibes text-2xl font-bold mb-3 block">- 30 Oktober
+                                        2025 -</span>
+                                    <p class="font-dm text-sm text-[#fff0f3]/90 leading-[1.85]">Hari pertama ena mulai
+                                        kerja alias masih training WKWKWKWK.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="polaroid-wrapper opacity-0 translate-y-8 perspective-1200 cursor-pointer"
+                            onclick="flipCard(this)">
+                            <div
+                                class="polaroid-card relative w-full aspect-[3/4] transform-style-3d transition-transform duration-700 shadow-2xl">
+                                <div
+                                    class="front absolute w-full h-full backface-hidden bg-[#fff0f3] p-4 pb-16 rounded-lg border border-gray-200">
+                                    <div class="washi-tape"></div>
+                                    <div class="w-full h-full bg-[#2e1619] rounded-lg overflow-hidden relative">
+                                        <img src="images/foto3-1.png"
+                                                class="w-full h-full object-cover" alt="Memori 3">
+                                        <div class="absolute inset-0 bg-[#2e1619] opacity-20 mix-blend-overlay"></div>
+                                    </div>
+                                    <p
+                                        class="font-vibes text-black text-xl text-center absolute bottom-4 w-full left-0">
+                                        First Movie in Cinema</p>
+                                </div>
+                                <div
+                                    class="back absolute w-full h-full backface-hidden rotate-y-180 bg-[#2e1619] p-6 rounded-lg border-2 border-dashed border-[#c67570] flex flex-col items-center justify-center text-center">
+                                    <span class="text-[#f7cad0] font-vibes text-2xl font-bold mb-3 block">- 29 November
+                                        2025 -</span>
+                                    <p class="font-dm text-sm text-[#fff0f3]/90 leading-[1.85]">Pertama kali nobar, tapi
+                                        entah kenapa yang paling keingat bukan ceritanya, malah momen duduk di sebelah
+                                        ena, kaciiww >_^</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="polaroid-wrapper opacity-0 translate-y-8 perspective-1200 cursor-pointer"
+                            onclick="flipCard(this)">
+                            <div
+                                class="polaroid-card relative w-full aspect-[3/4] transform-style-3d transition-transform duration-700 shadow-2xl">
+                                <div
+                                    class="front absolute w-full h-full backface-hidden bg-[#fff0f3] p-4 pb-16 rounded-lg border border-gray-200">
+                                    <div class="washi-tape"></div>
+                                    <div class="w-full h-full bg-[#2e1619] rounded-lg overflow-hidden relative">
+                                        <img src="images/foto4-1.jpg"
+                                            class="w-full h-full object-cover" alt="Memori 4">
+                                        <div class="absolute inset-0 bg-[#2e1619] opacity-20 mix-blend-overlay"></div>
+                                    </div>
+                                    <p
+                                        class="font-vibes text-black text-xl text-center absolute bottom-4 w-full left-0">
+                                        First Photobox</p>
+                                </div>
+                                <div
+                                    class="back absolute w-full h-full backface-hidden rotate-y-180 bg-[#2e1619] p-6 rounded-lg border-2 border-dashed border-[#c67570] flex flex-col items-center justify-center text-center">
+                                    <span class="text-[#f7cad0] font-vibes text-2xl font-bold mb-3 block">- 28 Desember
+                                        2025 -</span>
+                                    <p class="font-dm text-sm text-[#fff0f3]/90 leading-[1.85]">Photobox pertama kita,
+                                        yang harusnya 10 detik serius malah kebanyakan ketawa daripada pose benernya.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 5 -->
+                        <div class="polaroid-wrapper opacity-0 translate-y-8 perspective-1200 cursor-pointer"
+                            onclick="flipCard(this)">
+                            <div
+                                class="polaroid-card relative w-full aspect-[3/4] transform-style-3d transition-transform duration-700 shadow-2xl">
+                                <div
+                                    class="front absolute w-full h-full backface-hidden bg-[#fff0f3] p-4 pb-16 rounded-lg border border-gray-200">
+                                    <div class="washi-tape"></div>
+                                    <div class="w-full h-full bg-[#2e1619] rounded-lg overflow-hidden relative">
+                                        <img src="images/foto5-1.jpg"
+                                            class="w-full h-full object-cover" alt="Memori 5">
+                                        <div class="absolute inset-0 bg-[#2e1619] opacity-20 mix-blend-overlay"></div>
+                                    </div>
+                                    <p
+                                        class="font-vibes text-black text-xl text-center absolute bottom-4 w-full left-0">
+                                        Meeting the Clan</p>
+                                </div>
+                                <div
+                                    class="back absolute w-full h-full backface-hidden rotate-y-180 bg-[#2e1619] p-6 rounded-lg border-2 border-dashed border-[#c67570] flex flex-col items-center justify-center text-center">
+                                    <span class="text-[#f7cad0] font-vibes text-2xl font-bold mb-3 block">- 15 Februari 2026 -</span>
+                                    <p class="font-dm text-sm text-[#fff0f3]/90 leading-[1.85]">Satu sapaan gugup yang akhirnya disambut tawa dan pelukan hangat</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 6 -->
+                        <div class="polaroid-wrapper opacity-0 translate-y-8 perspective-1200 cursor-pointer"
+                            onclick="flipCard(this)">
+                            <div
+                                class="polaroid-card relative w-full aspect-[3/4] transform-style-3d transition-transform duration-700 shadow-2xl">
+                                <div
+                                    class="front absolute w-full h-full backface-hidden bg-[#fff0f3] p-4 pb-16 rounded-lg border border-gray-200">
+                                    <div class="washi-tape"></div>
+                                    <div class="w-full h-full bg-[#2e1619] rounded-lg overflow-hidden relative">
+                                        <img src="images/foto6.jpg"
+                                            class="w-full h-full object-cover" alt="Memori 6">
+                                        <div class="absolute inset-0 bg-[#2e1619] opacity-20 mix-blend-overlay"></div>
+                                    </div>
+                                    <p
+                                        class="font-vibes text-black text-xl text-center absolute bottom-4 w-full left-0">
+                                        First Kelotok Ride</p>
+                                </div>
+                                <div
+                                    class="back absolute w-full h-full backface-hidden rotate-y-180 bg-[#2e1619] p-6 rounded-lg border-2 border-dashed border-[#c67570] flex flex-col items-center justify-center text-center">
+                                    <span class="text-[#f7cad0] font-vibes text-2xl font-bold mb-3 block">- 11 Maret 2026 -</span>
+                                    <p class="font-dm text-sm text-[#fff0f3]/90 leading-[1.85]">Hari di mana setiap sudut sungai menyuguhkan pemandangan baru yang belum pernah dudut lihat sebelumnya</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 7 -->
+                        <div class="polaroid-wrapper opacity-0 translate-y-8 perspective-1200 cursor-pointer"
+                            onclick="flipCard(this)">
+                            <div
+                                class="polaroid-card relative w-full aspect-[3/4] transform-style-3d transition-transform duration-700 shadow-2xl">
+                                <div
+                                    class="front absolute w-full h-full backface-hidden bg-[#fff0f3] p-4 pb-16 rounded-lg border border-gray-200">
+                                    <div class="washi-tape"></div>
+                                    <div class="w-full h-full bg-[#2e1619] rounded-lg overflow-hidden relative">
+                                        <img src="images/foto7.jpg"
+                                            class="w-full h-full object-cover" alt="Memori 7">
+                                        <div class="absolute inset-0 bg-[#2e1619] opacity-20 mix-blend-overlay"></div>
+                                    </div>
+                                    <p
+                                        class="font-vibes text-black text-xl text-center absolute bottom-4 w-full left-0">
+                                        Coffee & Carnations</p>
+                                </div>
+                                <div
+                                    class="back absolute w-full h-full backface-hidden rotate-y-180 bg-[#2e1619] p-6 rounded-lg border-2 border-dashed border-[#c67570] flex flex-col items-center justify-center text-center">
+                                    <span class="text-[#f7cad0] font-vibes text-2xl font-bold mb-3 block">- 11 Maret 2026 -</span>
+                                    <p class="font-dm text-sm text-[#fff0f3]/90 leading-[1.85]">Siapa sangka perjalanan kelotok hari itu ditutup dengan secangkir kopi dan bunga indah dari ena WKWKWKWK</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 8 -->
+                        <div class="polaroid-wrapper opacity-0 translate-y-8 perspective-1200 cursor-pointer"
+                            onclick="flipCard(this)">
+                            <div
+                                class="polaroid-card relative w-full aspect-[3/4] transform-style-3d transition-transform duration-700 shadow-2xl">
+                                <div
+                                    class="front absolute w-full h-full backface-hidden bg-[#fff0f3] p-4 pb-16 rounded-lg border border-gray-200">
+                                    <div class="washi-tape"></div>
+                                    <div class="w-full h-full bg-[#2e1619] rounded-lg overflow-hidden relative">
+                                        <img src="images/foto8.jpg"
+                                            class="w-full h-full object-cover" alt="Memori 8">
+                                        <div class="absolute inset-0 bg-[#2e1619] opacity-20 mix-blend-overlay"></div>
+                                    </div>
+                                    <p
+                                        class="font-vibes text-black text-xl text-center absolute bottom-4 w-full left-0">
+                                        The One Day Summit</p>
+                                </div>
+                                <div
+                                    class="back absolute w-full h-full backface-hidden rotate-y-180 bg-[#2e1619] p-6 rounded-lg border-2 border-dashed border-[#c67570] flex flex-col items-center justify-center text-center">
+                                    <span class="text-[#f7cad0] font-vibes text-2xl font-bold mb-3 block">- 25 Maret 2026 -</span>
+                                    <p class="font-dm text-sm text-[#fff0f3]/90 leading-[1.85]">Muncak perdana yang super nekat, kaki mau copot gara gara turun naik, tapi semua cape hilang pas bisa berdiri di puncak sama ena hehe</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 9 -->
+                        <div class="polaroid-wrapper opacity-0 translate-y-8 perspective-1200 cursor-pointer"
+                            onclick="flipCard(this)">
+                            <div
+                                class="polaroid-card relative w-full aspect-[3/4] transform-style-3d transition-transform duration-700 shadow-2xl">
+                                <div
+                                    class="front absolute w-full h-full backface-hidden bg-[#fff0f3] p-4 pb-16 rounded-lg border border-gray-200">
+                                    <div class="washi-tape"></div>
+                                    <div class="w-full h-full bg-[#2e1619] rounded-lg overflow-hidden relative">
+                                        <img src="images/foto9.jpg"
+                                            class="w-full h-full object-cover" alt="Memori 9">
+                                        <div class="absolute inset-0 bg-[#2e1619] opacity-20 mix-blend-overlay"></div>
+                                    </div>
+                                    <p
+                                        class="font-vibes text-black text-xl text-center absolute bottom-4 w-full left-0">
+                                        The Future in the Mirror</p>
+                                </div>
+                                <div
+                                    class="back absolute w-full h-full backface-hidden rotate-y-180 bg-[#2e1619] p-6 rounded-lg border-2 border-dashed border-[#c67570] flex flex-col items-center justify-center text-center">
+                                    <span class="text-[#f7cad0] font-vibes text-2xl font-bold mb-3 block">- 30 April 2026 -</span>
+                                    <p class="font-dm text-sm text-[#fff0f3]/90 leading-[1.85]">Melihat ke cermin dan ngebayangin rumah kita nanti bakal seramai dan sebahagia hasil editan ini</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Widget 3: Labirin Perasaan -->
+            <section class="max-w-3xl mx-auto py-12 px-4 relative z-10">
+                <div class="glass-panel p-8 rounded-2xl text-center shadow-2xl">
+                    <h3 class="font-playfair italic text-2xl text-[#f7cad0] mb-2 font-bold">The Maze of Emotions </h3>
+                    <p class="font-dm text-sm text-gray-300 mb-8 max-w-md mx-auto leading-relaxed">Jangan sampai kena dindingnya yaa hahahaha</p>
+
+                    <div id="maze-container"
+                        class="relative w-full max-w-[320px] mx-auto h-[400px] border-2 border-[#c67570] rounded-lg overflow-hidden bg-[#141112]">
+
+                        <!-- Dinding Labirin Responsif Menggunakan Satuan % -->
+                        <div class="maze-wall w-[45%] h-[20px] top-[60px] left-0"></div>
+                        <div class="maze-wall w-[20px] h-[120px] top-[60px] left-[45%]"></div>
+                        <div class="maze-wall w-[30%] h-[20px] top-[60px] right-0"></div>
+
+                        <div class="maze-wall w-[20px] h-[140px] top-[140px] left-[20%]"></div>
+                        <div class="maze-wall w-[50%] h-[20px] top-[220px] right-[20%]"></div>
+                        <div class="maze-wall w-[20px] h-[100px] bottom-[40px] right-[20%]"></div>
+
+                        <div class="maze-wall w-[50%] h-[20px] bottom-[100px] left-0"></div>
+                        <div class="maze-wall w-[25%] h-[20px] bottom-[40px] left-[40%]"></div>
+
+                        <!-- Lokasi Start & End -->
+                        <div id="maze-start" class="absolute top-2 left-4 font-vibes text-xl text-[#f7cad0]">Start</div>
+                        <div id="maze-end"
+                            class="absolute bottom-4 left-4 font-vibes text-xl text-[#f9bec7] animate-pulse">End</div>
+
+                        <div id="maze-cursor"
+                            class="absolute top-4 left-4 text-2xl drop-shadow-md z-20 cursor-grab active:cursor-grabbing touch-none select-none transition-transform"
+                            style="transform: translate(-50%, -50%);">
+                            <span class="text-[#c67570]">👩‍🦼‍➡️</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Widget 4: Amplop Surat Rahasia -->
+            <section class="max-w-2xl mx-auto py-12 px-6 relative z-10 flex flex-col items-center">
+                <div class="glass-panel p-8 md:p-10 rounded-2xl w-full text-center flex flex-col items-center">
+                    <h3 class="font-playfair italic text-2xl text-[#f7cad0] mb-2 font-bold">📜 Quick Note for Ena</h3>
+                    <p class="font-dm text-sm text-gray-300 mb-8 leading-relaxed">Ada pesan terakhir yang belum ena
+                        baca di bawah ini...</p>
+
+                    <div class="cursor-pointer transition-transform hover:scale-105 active:scale-95 rounded-full p-2 shadow-[0_0_40px_rgba(247,202,208,0.25)] animate-pulse"
+                        onclick="bukaSurat()">
+                        <svg class="w-40 h-40 text-[#c67570]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="1">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            <circle cx="12" cy="12" r="3" fill="#f7cad0" stroke="none" />
+                        </svg>
+                    </div>
+                    <p class="font-vibes text-2xl mt-6 text-[#f7cad0]">Ketuk untuk membuka...</p>
+                </div>
+            </section>
+
+            <footer class="text-center pt-20 pb-6 max-w-xl mx-auto px-6">
+                <div class="w-full border-t border-dashed border-[#c67570]/30 mb-8"></div>
+                <p class="font-playfair italic text-base text-[#f7cad0] mb-2">"Setiap detik-nya bersama ena adalah halaman
+                    scrapbook terbaik dalam hidup dudut."</p>
+                <p class="text-[11px] text-[#c67570]/80 font-mono tracking-widest uppercase">Made with 💗 Exclusively
+                    for Ena • 2026</p>
+            </footer>
+
+        </div>
+    </div>
+
+    <!-- MODAL SURAT RAHASIA -->
+    <div id="modal-surat"
+        class="fixed inset-0 z-50 bg-[#141112]/80 backdrop-blur-md hidden items-center justify-center p-4 transition-opacity duration-500 opacity-0"
+        onclick="tutupSurat()">
+        <div class="glass-panel w-full max-w-lg p-6 sm:p-8 md:p-12 rounded-xl relative shadow-2xl border-[#c67570]"
+            onclick="event.stopPropagation()">
+            <h2 class="font-vibes text-3xl sm:text-4xl text-[#f7cad0] mb-4 text-center">Teruntuk Ena...</h2>
+            <div class="min-h-[200px] max-h-[50vh] overflow-y-auto pr-2">
+                <p id="teks-surat" 
+   class="font-dm text-xs text-gray-200 leading-normal tracking-wide cursor-blink"></p>
+            </div>
+
+            <div class="mt-8 flex justify-center">
+                <button id="btn-tutup-surat" onclick="tutupSurat()"
+                    class="opacity-0 pointer-events-none px-6 py-2 bg-[#2e1619] border border-[#c67570] text-[#f7cad0] rounded-xl hover:bg-[#c67570] hover:text-[#141112] transition-all text-xs font-bold cursor-pointer">
+                    Tutup Surat
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="mini-audio-player"
+        class="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 z-[80] hidden opacity-0 flex items-center justify-center cursor-pointer select-none">
+        <div
+            class="relative w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-black rounded-full border-2 border-[#c67570] shadow-lg flex items-center justify-center id-mini-cd">
+            <img src="images/fotoCD1.jpg" alt="Foto Ena"
+                class="absolute w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full object-cover border border-black z-10" />
+            <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 lg:w-2.5 lg:h-2.5 bg-[#141112] rounded-full z-20"></div>
+        </div>
+    </div>
+    <div id="spotify-widget" class="fixed bottom-24 left-6 z-[85] hidden opacity-0 w-[280px] max-w-[90vw]">
+        <div class="glass-panel p-4 rounded-xl border-[#c67570] shadow-2xl flex flex-col gap-3">
+
+            <div class="flex items-center gap-3">
+                <img src="images/fotoCD1.jpg" class="w-12 h-12 rounded-lg object-cover border border-[#c67570]" />
+                <div class="flex flex-col overflow-hidden text-left">
+                    <span class="font-dm text-sm text-[#fff0f3] font-semibold truncate">Our Beautiful Song 💖</span>
+                    <span class="font-dm text-xs text-gray-400 truncate">About Ena</span>
+                </div>
+            </div>
+
+            <div class="w-full flex flex-col gap-1">
+                <div class="w-full bg-gray-700 h-1 rounded-full overflow-visible relative cursor-pointer group"
+                    id="music-progress-bar">
+                    <div class="bg-[#c67570] h-full w-[0%]" id="music-current-progress"></div>
+                    <div class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-[#f7cad0] rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                        id="music-scrubber" style="left: 0%;"></div>
+                </div>
+                <div class="flex justify-between font-dm text-[10px] text-gray-400">
+                    <span id="music-time-now">0:00</span>
+                    <span id="music-duration-total">3:20</span>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-center gap-5 text-xl text-[#fff0f3]">
+                <button id="btn-music-prev" class="hover:text-[#c67570] transition-colors cursor-pointer">⏮</button>
+
+                <button id="btn-music-toggle"
+                    class="w-10 h-10 rounded-full bg-[#c67570] text-black flex items-center justify-center text-sm font-bold shadow-md hover:scale-105 transition-transform cursor-pointer">⏸</button>
+
+                <button id="btn-music-next" class="hover:text-[#c67570] transition-colors cursor-pointer">⏭</button>
+            </div>
+
+            <p id="music-funny-hint" class="font-dm text-[11px] text-[#f7cad0]/90 text-center hidden italic opacity-0">
+            </p>
+            <script>
+                /* ==================== GLOBAL CONFIG & DATA ==================== */
+                const daftarAlasan = [
+                    "Because your smile is so beautiful and sweet🍯",
+                    "I love the little things you do, like reminding me to eat and rest hehe.",
+                    "Your laugh is contagious, hearing you laugh always makes me happy too.",
+                    "Thank you for always supporting everything I do, from zero until now. 🥺",
+                ];
+
+                const teksPeringatan = "Sebelum lembaran demi lembaran memori ini terbuka sepenuhnya.. Tolong siapkan hati ena sebentar ya? Ada beberapa gembok kecil yang harus ena buka dulu untuk memastikan bahwa benar benar ena yang akan baca semua ini ^_^";
+
+                const kontenSurat = "Hai Cantik nya dudut! \nSelamat ulang tahun ya! Di hari spesial bertambahnya usiamu ini, dudut benar benar bersyukur karena Tuhan udah ngelahirin ena ke dunia, dan mempertemukan kita. Makasih ya udah jadi pacar (soon haha), sahabat, sekaligus support system terbaik selama ini. Jangan pernah bosen dengan segala kerandom an dudut, ya. Semoga impian ena satu per satu tercapai di tahun ini, dimudahkan segala urusannya, dan selalu dikelilingi kebahagiaan. Dudut bakal selalu ada di sini buat nemenin setiap proses ena. \nMungkin saat ini bukan barang mewah dalam kotak pita yang bisa dudut kasih, tapi lewat setiap halaman digital di layar ini, dudut merangkai semua rasa syukur dan kenangan kita khusus buat ena. \n\n-Happy birthday, My Favorite Person!";
+
+                /* ==================== GENERATE BACKGROUND PARTICLES (PERBAIKAN GLOBAL) ==================== */
+                function generateGlobalParticles() {
+                    const container = document.getElementById('global-particles');
+                    const totalParticles = 24; // Dioptimasi agar sangat ringan di mobile
+
+                    for (let i = 0; i < totalParticles; i++) {
+                        const particle = document.createElement('div');
+                        const isUp = i % 2 === 0; // Setengah melayang ke atas, setengah ke bawah
+
+                        particle.className = `heart-particle ${isUp ? 'heart-up' : 'heart-down'}`;
+                        particle.innerHTML = '♥';
+
+                        // Variasi style acak menggunakan CSS Variables (Sangat Ringan dibanding animasi JS)
+                        particle.style.setProperty('--p-size', `${8 + Math.random() * 12}px`);
+                        particle.style.setProperty('--p-duration', `${6 + Math.random() * 6}s`);
+                        particle.style.setProperty('--p-delay', `${Math.random() * -10}s`);
+                        particle.style.setProperty('--p-opacity', `${0.15 + Math.random() * 0.25}`);
+                        particle.style.setProperty('--p-drift', `${(Math.random() * 120) - 60}px`);
+                        particle.style.left = `${Math.random() * 100}vw`;
+
+                        container.appendChild(particle);
+                    }
+                }
+                // Jalankan langsung saat script di-load
+                generateGlobalParticles();
+
+
+                /* ==================== GLOBAL UTILITIES ==================== */
+                function switchPage(fromId, toId, displayMode = 'buka-flex') {
+                    const fromEl = document.getElementById(`page-${fromId}`);
+                    const toEl = document.getElementById(`page-${toId}`);
+
+                    gsap.to(fromEl, {
+                        opacity: 0,
+                        duration: 0.5,
+                        onComplete: () => {
+                            fromEl.classList.remove('buka-flex', 'buka-block');
+                            fromEl.style.setProperty('display', 'none', 'important');
+                            fromEl.style.visibility = 'hidden';
+
+                            toEl.classList.add(displayMode);
+                            toEl.style.display = '';
+                            toEl.style.visibility = '';
+
+                            gsap.to(toEl, { opacity: 1, duration: 0.8, ease: "power2.out" });
+                        }
+                    });
+                }
+
+                let typingTimer = null;
+function typeWriter(teks, elemenId, btnId, kecepatan = 30) {
+    const el = document.getElementById(elemenId);
+    const btn = document.getElementById(btnId);
+    el.innerHTML = ''; // Mengosongkan isi elemen di awal
+    el.classList.add('cursor-blink');
+    let i = 0;
+
+    function ketik() {
+        if (i < teks.length) {
+            // KUNCI UTAMA: Cek apakah karakter saat ini adalah awal dari tag <br>
+            if (teks.substring(i, i + 4) === '<br>') {
+                el.innerHTML += '<br>'; // Masukkan tag <br> seutuhnya sekaligus
+                i += 4; // Lompat 4 karakter melewati teks '<br>' agar tidak diketik per huruf
+            } else {
+                el.innerHTML += teks.charAt(i); // Ketik huruf biasa seperti semula
+                i++;
+            }
+            typingTimer = setTimeout(ketik, kecepatan);
+        } else {
+            el.classList.remove('cursor-blink');
+            if (btn) {
+                gsap.to(btn, { opacity: 1, duration: 1, ease: "power1.inOut" });
+                btn.classList.remove('pointer-events-none');
+            }
+        }
+    }
+    ketik();
+}
+
+
+                /* ==================== PERBAIKAN ANIMASI BUNGA JATUH BERPUTAR (ANTI-LAG) ==================== */
+                function hujanBungaBerputar() {
+                    const emojis = ['🌸', '🌹', '🌺', '🌻', '🌼'];
+                    const jumlahBunga = 25; // Jumlah optimal: terlihat ramai tapi performa super mulus
+
+                    for (let i = 0; i < jumlahBunga; i++) {
+                        let flower = document.createElement('div');
+                        flower.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                        flower.className = 'falling-flower text-2xl md:text-3xl drop-shadow-md';
+
+                        // Set posisi horizontal awal secara acak
+                        flower.style.left = (Math.random() * 100) + 'vw';
+                        document.body.appendChild(flower);
+
+                        // Konfigurasi variasi acak untuk animasi rotasi dan jatuh
+                        let startRotation = Math.random() * 360;
+                        let endRotation = startRotation + 360 + (Math.random() * 720); // Berputar beberapa kali
+                        let fallDuration = 2.5 + Math.random() * 2.5; // Kecepatan jatuh bervariasi
+                        let horizontalDrift = (Math.random() * 150) - 75; // Bergerak serong sedikit
+
+                        // Animasi GSAP menggunakan Hardware Acceleration (GPU) untuk mencegah lag di HP
+                        gsap.fromTo(flower,
+                            {
+                                y: -50,
+                                rotation: startRotation,
+                                scale: Math.random() * 0.6 + 0.6,
+                                opacity: 0
+                            },
+                            {
+                                y: window.innerHeight + 50,
+                                x: `+=${horizontalDrift}`,
+                                rotation: endRotation,
+                                opacity: 1,
+                                duration: fallDuration,
+                                ease: "none",
+                                delay: Math.random() * 0.5, // Muncul bergantian dengan mulus
+                                onComplete: () => flower.remove()
+                            }
+                        );
+                    }
+                }
+
+                function explodeParticles(x, y, isMiniGame = false) {
+                    const emojis = ['🌸', '✨', '💖', '🌹', '🥰'];
+                    const jumlah = isMiniGame ? 15 : 32;
+                    const arrPartikel = [];
+
+                    // 1. Buat elemen dengan Formasi Bentuk LOVE (Hati)
+                    for (let i = 0; i < jumlah; i++) {
+                        let p = document.createElement('div');
+                        p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                        p.className = 'fixed z-[100] pointer-events-none text-xl md:text-2xl drop-shadow-md opacity-0';
+
+                        // Rumus matematika bentuk Love (Hati)
+                        let t = (i / jumlah) * Math.PI * 2;
+                        // Skala ukuran bentuk love (mini game lebih kecil, kado lebih besar)
+                        let scaleFactor = isMiniGame ? 5 : 10;
+
+                        // Rumus koordinat X dan Y untuk membentuk pola hati
+                        let heartX = 16 * Math.pow(Math.sin(t), 3);
+                        let heartY = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+
+                        let targetX = x + (heartX * scaleFactor) - 12;
+                        let targetY = y + (heartY * scaleFactor) - 12;
+
+                        p.style.left = targetX + 'px';
+                        p.style.top = targetY + 'px';
+                        p.style.willChange = 'transform, opacity';
+
+                        document.body.appendChild(p);
+                        arrPartikel.push(p);
+                    }
+
+                    // 2. Animasikan muncul satu per satu (Stagger) membentuk Love
+                    gsap.to(arrPartikel, {
+                        opacity: 1,
+                        scale: 1.2,
+                        duration: 0.25,
+                        stagger: {
+                            each: 0.03,
+                            ease: "none"
+                        },
+                        onComplete: () => {
+                            gsap.to(arrPartikel, {
+                                opacity: 0,
+                                scale: 0.7,
+                                y: "+=15", // Efek jatuh lembut setelah membentuk pola love
+                                duration: 0.8,
+                                delay: 0.4,
+                                stagger: 0.01,
+                                onComplete: () => arrPartikel.forEach(p => p.remove())
+                            });
+                        }
+                    });
+                }
+
+                function bungaDariBawah() {
+                    const bungaEmojis = ['🌸', '🌹', '🌷', '🌺'];
+                    const jumlahBunga = 25; // Jumlah bunga yang naik dari bawah
+
+                    for (let i = 0; i < jumlahBunga; i++) {
+                        let b = document.createElement('div');
+                        b.innerText = bungaEmojis[Math.floor(Math.random() * bungaEmojis.length)];
+                        b.className = 'fixed z-[90] pointer-events-none text-2xl md:text-3xl opacity-0';
+
+                        // Posisi awal acak di bawah layar
+                        b.style.left = Math.random() * 100 + 'vw';
+                        b.style.bottom = '-50px';
+                        b.style.willChange = 'transform, opacity';
+                        document.body.appendChild(b);
+
+                        // Animasi meluncur naik ke atas secara acak
+                        gsap.to(b, {
+                            opacity: Math.random() * 0.5 + 0.5,
+                            y: -(window.innerHeight * 0.4 + Math.random() * (window.innerHeight * 0.4)), // Naik 40% - 80% tinggi layar
+                            rotation: Math.random() * 360,
+                            scale: Math.random() * 0.5 + 0.8,
+                            duration: 2 + Math.random() * 1.5,
+                            delay: Math.random() * 0.5, // Munculnya tidak barengan
+                            ease: "power1.out",
+                            onComplete: () => {
+                                // Setelah sampai atas, perlahan menghilang dan turun sedikit seperti layu
+                                gsap.to(b, {
+                                    opacity: 0,
+                                    y: '+=30',
+                                    duration: 1,
+                                    onComplete: () => b.remove()
+                                });
+                            }
+                        });
+                    }
+                }
+
+                /* ==================== GLOBAL CUSTOM TOAST NOTIFICATION ==================== */
+                function tampilkanNotif(pesan, ikon = '✨', durasi = 4000) {
+                    const toast = document.getElementById('custom-toast');
+                    const toastText = document.getElementById('toast-text');
+                    const toastIcon = document.getElementById('toast-icon');
+
+                    toastText.innerHTML = pesan;
+                    toastIcon.innerText = ikon;
+                    toast.classList.remove('hidden');
+
+                    // Animasi muncul dari atas menggunakan GSAP
+                    gsap.killTweensOf(toast);
+                    gsap.fromTo(toast,
+                        { y: -50, opacity: 0 },
+                        { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }
+                    );
+
+                    // Otomatis menghilang setelah beberapa detik
+                    setTimeout(() => {
+                        gsap.to(toast, {
+                            y: -30,
+                            opacity: 0,
+                            duration: 0.4,
+                            ease: "power3.in",
+                            onComplete: () => toast.classList.add('hidden')
+                        });
+                    }, durasi);
+                }
+
+                /* ==================== PAGE 0: KADO ==================== */
+                const gift = document.getElementById('gift-box');
+                // Pastikan isi string di bawah ini sesuai dengan ID elemen teks "tap kadonya" milikmu
+                const tapText = document.getElementById('tap-hint');
+
+                gift.addEventListener('click', (e) => {
+                    gift.classList.remove('animate-denyut');
+
+                    const rect = gift.getBoundingClientRect();
+                    const clickX = rect.left + rect.width / 2;
+                    const clickY = rect.top + rect.height / 2;
+
+                    // Efek Tulisan "Tap Kadonya" Menjadi Bunga Gugur ke Bawah
+                    if (tapText) {
+                        const textRect = tapText.getBoundingClientRect();
+                        const textX = textRect.left + textRect.width / 2;
+                        const textY = textRect.top;
+
+                        // Sembunyikan teks asli
+                        tapText.style.opacity = '0';
+
+                        // Buat efek kelopak bunga gugur tepat dari posisi teks tersebut
+                        for (let i = 0; i < 15; i++) {
+                            let gugur = document.createElement('div');
+                            gugur.innerText = Math.random() > 0.5 ? '🌸' : '🌹';
+                            gugur.className = 'fixed z-[100] pointer-events-none text-lg';
+                            // Sebar di sepanjang lebar text area sebelumnya
+                            gugur.style.left = (textRect.left + Math.random() * textRect.width) + 'px';
+                            gugur.style.top = textY + 'px';
+                            document.body.appendChild(gugur);
+
+                            gsap.to(gugur, {
+                                y: window.innerHeight - textY, // Gugur sampai bawah layar
+                                x: `+=${Math.random() * 60 - 30}`, // Melayang agak ke kiri/kanan saat turun
+                                rotation: Math.random() * 720,
+                                opacity: 0,
+                                duration: 1.5 + Math.random() * 1.5,
+                                ease: "linear",
+                                onComplete: () => gugur.remove()
+                            });
+                        }
+                    }
+
+                    let tl = gsap.timeline();
+                    tl.to(gift, { scaleX: 1.4, scaleY: 0.5, y: 25, duration: 0.4, ease: "power2.in" })
+                        .to(gift, { scaleX: 0.6, scaleY: 1.6, y: -40, duration: 0.15, ease: "power1.out" })
+                        .to(gift, {
+                            scale: 0, duration: 0.05, onComplete: () => {
+                                // 1. Panggil efek bentuk Love Berurutan
+                                explodeParticles(clickX, clickY, false);
+
+                                // 2. Panggil efek bunga bermunculan dari bawah layar
+                                bungaDariBawah();
+
+                                // 3. Efek hujan bunga global dari atas tetap berjalan
+                                hujanBungaBerputar();
+
+                                setTimeout(() => switchPage(0, 1, 'buka-flex'), 2200); // Delay disesuaikan agar animasi selesai dulu
+                            }
+                        });
+                });
+
+                /* ==================== PAGE 1: LOGIN ==================== */
+                function cekLogin() {
+                    const u = document.getElementById('login-user').value.trim().toLowerCase();
+                    const p = document.getElementById('login-pass').value.trim().toLowerCase();
+                    const err = document.getElementById('login-error');
+
+                    if (u === 'dudut' && p === 'dudut') {
+                        err.classList.add('hidden');
+                        switchPage(1, 2, 'buka-flex');
+
+                        setTimeout(() => {
+                            typeWriter(teksPeringatan, 'typewriter-text', 'btn-lanjut-2', 40);
+                        }, 1000);
+                    } else {
+                        err.classList.remove('hidden');
+                        gsap.fromTo(err, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3 });
+                        gsap.to('#page-1 .glass-panel', { x: 10, yoyo: true, repeat: 5, duration: 0.05 });
+                    }
+                }
+
+                /* ==================== PAGE 2 -> PAGE 3 ==================== */
+                function pindahKePage(target) {
+                    if (typingTimer) { clearTimeout(typingTimer); typingTimer = null; }
+                    switchPage(2, target, 'buka-flex');
+                }
+
+                /* ==================== PAGE 3: TANGGAL ==================== */
+                function cekTanggal() {
+                    const tgl = document.getElementById('val-tgl').value;
+                    const bln = document.getElementById('val-bln').value;
+                    const thn = document.getElementById('val-thn').value;
+                    const err = document.getElementById('date-error');
+
+                    if (tgl === '30' && bln === 'Mei' && thn === '2007') {
+                        err.classList.add('hidden');
+                        hujanBungaBerputar();
+
+                        // Menggunakan Custom UI Notification dari atas layar
+                        tampilkanNotif("<b>Sistem Terverifikasi!</b><br>Selamat tanggal 30 Mei, Sayang! Gembok dilepaskan, mari masuk.. 💖", "🔓", 4500);
+
+                        switchPage(3, 4, 'buka-flex');
+                    } else {
+                        err.classList.remove('hidden');
+                        gsap.fromTo(err, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+                        gsap.to('#page-3 .glass-panel', { x: 10, yoyo: true, repeat: 5, duration: 0.05 });
+                    }
+                }
+
+                /* ==================== PAGE 4: AUDIO ==================== */
+                let bgm = document.getElementById('bgm');
+                let isPlaying = false;
+
+                function toggleMusic() {
+                    if (isPlaying) {
+                        bgm.pause();
+                    } else {
+                        bgm.play().then(() => {
+                            // Audio berhasil diputar
+                        }).catch(e => console.log("Audio blocked."));
+                    }
+                    isPlaying = !isPlaying;
+                }
+
+                function bukaScrapbookUtama() {
+                    toggleMusic();
+                    switchPage(4, 5, 'buka-block');
+                    document.body.style.overflow = 'auto';
+
+                    // Animasi smooth CD dari page 4 ke page 5
+                    const miniCD = document.getElementById('mini-audio-player');
+                    if (miniCD) {
+                        gsap.fromTo(miniCD,
+                            { y: 100, opacity: 0 },
+                            { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }
+                        );
+                    }
+
+                    // ====================================================================
+                    // TAMBAHKAN: Logika untuk memunculkan dan memutar Mini CD di kiri bawah
+                    // ====================================================================
+                    const miniCDPlayer = document.getElementById('mini-audio-player');
+                    if (miniCDPlayer) {
+                        miniCDPlayer.classList.remove('hidden');
+
+                        // Buat kaset mini berputar terus-menerus (looping) menggunakan GSAP
+                        gsap.to("#mini-audio-player .id-mini-cd", {
+                            rotation: 360,
+                            duration: 4,
+                            repeat: -1,
+                            ease: "none"
+                        });
+                    }
+                    // ====================================================================
+
+                    setTimeout(() => {
+                        initScrollReveal();
+                        startAmbientHearts();
+                    }, 1000);
+                }
+
+                /* ==================== PAGE 5: MAIN SCRAPBOOK ==================== */
+                let heartsInterval = null;
+                function startAmbientHearts() {
+                    if (heartsInterval) clearInterval(heartsInterval);
+                    heartsInterval = setInterval(() => {
+                        const heart = document.createElement('div');
+                        heart.className = 'ambient-heart';
+                        heart.style.left = Math.random() * 100 + 'vw';
+                        const size = 12 + Math.random() * 14;
+                        heart.innerHTML = `<span style="font-size: ${size}px;">♥</span>`;
+
+                        const duration = 5 + Math.random() * 6;
+                        heart.style.animation = `floatUp ${duration}s linear forwards`;
+
+                        document.getElementById('page-5').appendChild(heart);
+
+                        setTimeout(() => { heart.remove(); }, duration * 1000 + 500);
+                    }, 550);
+                }
+
+                function stopAmbientHearts() {
+                    if (heartsInterval) { clearInterval(heartsInterval); heartsInterval = null; }
+                }
+
+                function kocokStoples() {
+                    const jar = document.getElementById('jar-trigger');
+                    const out = document.getElementById('text-alasan');
+
+                    jar.classList.remove('anim-shake');
+                    void jar.offsetWidth;
+                    jar.classList.add('anim-shake');
+
+                    gsap.to("#box-alasan", { scale: 0.96, duration: 0.1, yoyo: true, repeat: 1 });
+                    gsap.to(out, {
+                        opacity: 0, duration: 0.15, onComplete: () => {
+                            const randomQuotes = daftarAlasan[Math.floor(Math.random() * daftarAlasan.length)];
+                            out.innerText = `"${randomQuotes}"`;
+                            gsap.to(out, { opacity: 1, duration: 0.4 });
+                        }
+                    });
+                }
+
+                function initScrollReveal() {
+                    const cards = document.querySelectorAll('.polaroid-wrapper');
+                    const rotations = [-3, 2, -2, 3, -1, 4, -4, 1, 2];
+
+                    cards.forEach((card, idx) => {
+                        const inner = card.querySelector('.polaroid-card');
+                        const deg = rotations[idx % rotations.length] + (Math.random() * 1.2 - 0.6);
+                        inner.style.transform = `rotate(${deg}deg)`;
+                    });
+
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                gsap.to(entry.target, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" });
+                                observer.unobserve(entry.target);
+                            }
+                        });
+                    }, { threshold: 0.1 });
+
+                    cards.forEach(card => observer.observe(card));
+                }
+
+                function flipCard(el) {
+                    const inner = el.querySelector('.polaroid-card');
+                    const currentRotation = inner.style.transform;
+                    if (currentRotation.includes('rotateY(180deg)')) {
+                        inner.style.transform = currentRotation.replace(' rotateY(180deg)', '');
+                        setTimeout(() => { el.style.zIndex = "1"; }, 700);
+                    } else {
+                        el.style.zIndex = "40";
+                        inner.style.transform = currentRotation + ' rotateY(180deg)';
+                    }
+                }
+
+                const modalSurat = document.getElementById('modal-surat');
+                const teksSuratEl = document.getElementById('teks-surat');
+                const btnTutup = document.getElementById('btn-tutup-surat');
+
+                function bukaSurat() {
+                    if (typingTimer) { clearTimeout(typingTimer); typingTimer = null; }
+                    modalSurat.classList.remove('hidden');
+                    modalSurat.classList.add('flex');
+
+                    const htmlKonten = kontenSurat.replace(/\n/g, '<br>');
+                    const wrapper = document.getElementById('scrapbook-wrapper');
+                    wrapper.classList.add('blur-[4px]', 'pointer-events-none');
+
+                    gsap.to(modalSurat, {
+                        opacity: 1,
+                        duration: 0.5,
+                        onComplete: () => { typeWriter(htmlKonten, 'teks-surat', 'btn-tutup-surat', 35); }
+                    });
+                }
+
+                function tutupSurat() {
+                    if (typingTimer) { clearTimeout(typingTimer); typingTimer = null; }
+                    const wrapper = document.getElementById('scrapbook-wrapper');
+                    wrapper.classList.remove('blur-[4px]', 'pointer-events-none');
+
+                    gsap.to(modalSurat, {
+                        opacity: 0,
+                        duration: 0.5,
+                        onComplete: () => {
+                            modalSurat.classList.add('hidden');
+                            modalSurat.classList.remove('flex');
+                            teksSuratEl.innerHTML = '';
+                            btnTutup.style.opacity = '0';
+                            btnTutup.classList.add('pointer-events-none');
+                        }
+                    });
+                }
+
+                /* ==================== OBSTACLE LOVE ENGINE (Maze Game) ==================== */
+                const maze = document.getElementById('maze-container');
+                const cursorHeart = document.getElementById('maze-cursor');
+                let isDragging = false;
+
+                function resetMaze() {
+                    cursorHeart.style.left = '25px';
+                    cursorHeart.style.top = '25px';
+                    cursorHeart.style.transform = 'translate(-50%, -50%) scale(0)';
+                    setTimeout(() => { cursorHeart.style.transform = 'translate(-50%, -50%) scale(1)'; }, 200);
+                }
+
+                resetMaze();
+
+                cursorHeart.addEventListener('mousedown', (e) => { isDragging = true; cursorHeart.style.cursor = 'grabbing'; e.preventDefault(); });
+                window.addEventListener('mouseup', () => { isDragging = false; cursorHeart.style.cursor = 'grab'; });
+                window.addEventListener('mousemove', (e) => { if (!isDragging) return; handleMazeMovement(e.clientX, e.clientY); });
+                cursorHeart.addEventListener('touchstart', (e) => { isDragging = true; e.preventDefault(); }, { passive: false });
+                window.addEventListener('touchend', () => { isDragging = false; });
+                window.addEventListener('touchmove', (e) => { if (!isDragging) return; e.preventDefault(); let touch = e.touches[0]; handleMazeMovement(touch.clientX, touch.clientY); }, { passive: false });
+
+                function handleMazeMovement(clientX, clientY) {
+                    let rect = maze.getBoundingClientRect();
+                    let x = clientX - rect.left;
+                    let y = clientY - rect.top;
+
+                    if (x < 10 || y < 10 || x > rect.width - 10 || y > rect.height - 10) return;
+
+                    cursorHeart.style.left = x + 'px';
+                    cursorHeart.style.top = y + 'px';
+
+                    cursorHeart.style.visibility = 'hidden';
+                    let elemUnder = document.elementFromPoint(clientX, clientY);
+                    cursorHeart.style.visibility = 'visible';
+
+                    if (elemUnder) {
+                        if (elemUnder.classList.contains('maze-wall')) {
+                            isDragging = false;
+
+                            // Efek saat terkena obstacle/dinding labirin (Screen Flash & Shake)
+                            gsap.fromTo(maze, { borderColor: "#ff0000", backgroundColor: "#2e1619" }, { borderColor: "#c67570", backgroundColor: "#141112", duration: 0.4 });
+                            gsap.to(maze, { x: 8, yoyo: true, repeat: 3, duration: 0.05, onComplete: () => gsap.set(maze, { x: 0 }) });
+
+                            // Ledakan partikel kecil tanda gagal di posisi tabrakan
+                            explodeParticles(clientX, clientY, true);
+
+                            resetMaze();
+                        }
+                        else if (elemUnder.id === 'maze-end') {
+                            isDragging = false;
+                            explodeParticles(clientX, clientY, false); // Ledakan besar tanda menang
+                            // Menggunakan Custom UI Notification melayang dari atas layar seperti page 4
+                            tampilkanNotif("<b text-center>Labirin Ditaklukan!</b> <br>Anjayyy berhasil melewati semua rintangan, sayanggkuu kerenn !!", "💝", 5000);
+                            resetMaze();
+                        }
+                    }
+                }
+
+                window.addEventListener('beforeunload', () => { stopAmbientHearts(); });
+
+                /* ==================== SPOTIFY MINI PLAYER LOGIC ==================== */
+                const miniPlayer = document.getElementById('mini-audio-player');
+                const spotifyWidget = document.getElementById('spotify-widget');
+                const btnToggle = document.getElementById('btn-music-toggle');
+                const btnPrev = document.getElementById('btn-music-prev');
+                const btnNext = document.getElementById('btn-music-next');
+                const funnyHint = document.getElementById('music-funny-hint');
+                const progressBar = document.getElementById('music-progress-bar');
+                const currentProgress = document.getElementById('music-current-progress');
+                const timeNowDisplay = document.getElementById('music-time-now');
+
+                let musicPlaying = true; // Status awal musik berputar
+                let widgetOpen = false;
+
+                // Toggle Buka/Tutup Pop Up Spotify saat Mini CD diklik
+                miniPlayer.addEventListener('click', () => {
+                    if (!widgetOpen) {
+                        spotifyWidget.classList.remove('hidden');
+                        gsap.fromTo(spotifyWidget, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" });
+                        widgetOpen = true;
+                    } else {
+                        gsap.to(spotifyWidget, { y: 20, opacity: 0, duration: 0.3, onComplete: () => spotifyWidget.classList.add('hidden') });
+                        widgetOpen = false;
+                    }
+                });
+
+                // Kontrol Play / Pause - Update tombol Spotify widget
+                function updatePlayPauseButtons() {
+                    const icon = isPlaying ? "⏸" : "▶";
+                    btnToggle.innerText = icon;
+                }
+
+                btnToggle.addEventListener('click', () => {
+                    toggleMusic();
+                    updatePlayPauseButtons();
+                });
+
+                // Update UI saat audio diputar untuk menampilkan durasi
+                bgm.addEventListener('loadedmetadata', () => {
+                    if (bgm.duration) {
+                        const minutes = Math.floor(bgm.duration / 60);
+                        const seconds = Math.floor(bgm.duration % 60);
+                        document.getElementById('music-duration-total').innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                    }
+                });
+
+                bgm.addEventListener('timeupdate', () => {
+                    if (bgm.duration) {
+                        const percent = (bgm.currentTime / bgm.duration) * 100;
+                        currentProgress.style.width = percent + '%';
+
+                        // Update posisi scrubber (slider thumb)
+                        const scrubber = document.getElementById('music-scrubber');
+                        if (scrubber) {
+                            scrubber.style.left = percent + '%';
+                        }
+
+                        // Format waktu: MM:SS
+                        const minutes = Math.floor(bgm.currentTime / 60);
+                        const seconds = Math.floor(bgm.currentTime % 60);
+                        timeNowDisplay.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                    }
+                });
+
+                // Memungkinkan click dan drag pada progress bar untuk skip ke posisi tertentu
+                let isDraggingProgress = false;
+
+                function seekTo(e) {
+                    if (!bgm.duration) return;
+                    const rect = progressBar.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const percent = Math.max(0, Math.min(1, clickX / rect.width));
+                    bgm.currentTime = percent * bgm.duration;
+                }
+
+                // Support untuk mouse click
+                progressBar.addEventListener('click', seekTo);
+
+                // Support untuk mouse drag
+                progressBar.addEventListener('mousedown', () => { isDraggingProgress = true; });
+                window.addEventListener('mousemove', (e) => {
+                    if (isDraggingProgress) seekTo(e);
+                });
+                window.addEventListener('mouseup', () => { isDraggingProgress = false; });
+
+                // Support untuk touch drag (mobile)
+                progressBar.addEventListener('touchstart', () => { isDraggingProgress = true; }, { passive: false });
+                window.addEventListener('touchmove', (e) => {
+                    if (isDraggingProgress) {
+                        if (!bgm.duration) return;
+                        const touch = e.touches[0];
+                        const rect = progressBar.getBoundingClientRect();
+                        const touchX = touch.clientX - rect.left;
+                        const percent = Math.max(0, Math.min(1, touchX / rect.width));
+                        bgm.currentTime = percent * bgm.duration;
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+                window.addEventListener('touchend', () => { isDraggingProgress = false; });
+
+                // Pemberitahuan Lucu saat klik Tombol Hiasan Next/Prev
+                const pesanLucu = [
+                    "Eits, ga bisa skip! Lagu ini diputar khusus buat kamu aja tauu.. 😜",
+                    "Tombol ini cuman pajangan, dengerin sampai habis ya Sayang! 🥰",
+                    "Mundur? Ga ada kata mundur dalam mencintai Ena! Cieee.. 💖",
+                    "Gaboleh di-skip! Dudut udah capek-capek milihin lagu paling romantis ini! 😤"
+                ];
+
+                function tampolNotifLucu() {
+                    funnyHint.innerText = pesanLucu[Math.floor(Math.random() * pesanLucu.length)];
+                    funnyHint.classList.remove('hidden');
+
+                    gsap.killTweensOf(funnyHint);
+                    gsap.fromTo(funnyHint, { opacity: 0, y: -5 }, { opacity: 1, y: 0, duration: 0.3 });
+
+                    // Otomatis hilang dalam 2.5 detik
+                    setTimeout(() => {
+                        gsap.to(funnyHint, { opacity: 0, duration: 0.3, onComplete: () => funnyHint.classList.add('hidden') });
+                    }, 2500);
+                }
+
+                btnPrev.addEventListener('click', tampolNotifLucu);
+                btnNext.addEventListener('click', tampolNotifLucu);
+
+            </script>
+        </div>
+    </div>
+</body>
+
+</html>
