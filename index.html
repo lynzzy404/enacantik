@@ -49,7 +49,7 @@
             /* Dikunci di awal */
         }
 
-        /* ==================== GLOBAL AMBIENT LOVE PARTICLES (PERBAIKAN) ==================== */
+/* ==================== GLOBAL AMBIENT LOVE PARTICLES (OPTIMASI ULTRA) ==================== */
         .global-heart-container {
             position: fixed;
             inset: 0;
@@ -63,58 +63,55 @@
             color: var(--accent-pink);
             opacity: 0;
             font-size: var(--p-size, 14px);
-            will-change: transform, opacity;
-            /* Optimalisasi Akselerasi GPU Anti-Lag */
+            /* Memaksa browser mengunci layer ke hardware acceleration semenjak element di-create */
+            will-change: transform; 
+            transform: translate3d(0, 0, 0);
         }
 
         /* Gerakan partikel naik dari bawah ke atas */
         .heart-up {
-            bottom: -20px;
-            animation: floatParticleUp var(--p-duration, 8s) ease-in-out infinite;
+            /* 1. UBAH KE LINEAR: Menghilangkan kalkulasi matematika kurva yang berat di HP */
+            animation: floatParticleUp var(--p-duration, 10s) linear infinite;
             animation-delay: var(--p-delay, 0s);
         }
 
         /* Gerakan partikel turun dari atas ke bawah */
         .heart-down {
-            top: -20px;
-            animation: floatParticleDown var(--p-duration, 8s) ease-in-out infinite;
+            /* 1. UBAH KE LINEAR: Menghilangkan kalkulasi matematika kurva yang berat di HP */
+            animation: floatParticleDown var(--p-duration, 10s) linear infinite;
             animation-delay: var(--p-delay, 0s);
         }
 
         @keyframes floatParticleUp {
             0% {
-                transform: translate3d(0, 0, 0) rotate(0deg);
+                /* 2. PINDAHKAN ATURAN AWAL POSISI KE TRANSLATE3D: Biar murni diproses chip grafis HP sejak persen ke-0 */
+                transform: translate3d(0, 105vh, 0) rotate(0deg);
                 opacity: 0;
             }
-
             10% {
                 opacity: var(--p-opacity, 0.4);
             }
-
             90% {
                 opacity: var(--p-opacity, 0.4);
             }
-
             100% {
-                transform: translate3d(var(--p-drift, 40px), -105vh, 0) rotate(360deg);
+                transform: translate3d(var(--p-drift, 40px), -10vh, 0) rotate(360deg);
                 opacity: 0;
             }
         }
 
         @keyframes floatParticleDown {
             0% {
-                transform: translate3d(0, 0, 0) rotate(0deg);
+                /* 2. PINDAHKAN ATURAN AWAL POSISI KE TRANSLATE3D */
+                transform: translate3d(0, -10vh, 0) rotate(0deg);
                 opacity: 0;
             }
-
             10% {
                 opacity: var(--p-opacity, 0.4);
             }
-
             90% {
                 opacity: var(--p-opacity, 0.4);
             }
-
             100% {
                 transform: translate3d(var(--p-drift, -40px), 105vh, 0) rotate(-360deg);
                 opacity: 0;
@@ -127,7 +124,7 @@
             top: -50px;
             z-index: 99;
             pointer-events: none;
-            will-change: transform, opacity;
+            will-change: transform;
         }
 
 /* 1.2 Sistem Tipografi */
