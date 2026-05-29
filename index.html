@@ -1473,7 +1473,7 @@ let heartsInterval = null;
 
 function startAmbientHearts() {
     // TRIK DARURAT: Jika lebar layar di bawah 768px (Mobile/HP), batalkan partikel demi kelancaran 60FPS
-    if (window.innerWidth < 768) {
+    if (window.innerWidth < 2000) {
         console.log("Mode Mobile: Partikel dinonaktifkan agar transisi scrapbook super smooth.");
         return; 
     }
