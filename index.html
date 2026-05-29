@@ -1470,21 +1470,20 @@ function typeWriter(teks, elemenId, btnId, kecepatan = 30) {
                     }, 1000);
                 }
 
-/* ==================== PAGE 5: MAIN SCRAPBOOK (TEKNIK REUSABLE POOL) ==================== */
+/* ==================== PAGE 5: MAIN SCRAPBOOK (FIXED POOLING) ==================== */
 let heartsInterval = null;
 
 function startAmbientHearts() {
     const container = document.getElementById('page-5');
     if (!container) return;
 
-    // Bersihkan interval lama jika aktif
     if (heartsInterval) clearInterval(heartsInterval);
 
-    // Ambil elemen yang sudah ada, jika belum ada baru kita buat SEKALI SAJA (maksimal 4 biji)
+    // KUNCI UTAMA 1: Langsung buat 6 elemen hati di awal secara instan begitu fungsi dipanggil
     let hearts = container.getElementsByClassName('ambient-heart');
     if (hearts.length === 0) {
         const fragment = document.createDocumentFragment();
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 6; i++) { // Kita pakai 6 biji biar pas tingkat kerameannya
             const heart = document.createElement('div');
             heart.className = 'ambient-heart';
             heart.innerHTML = '♥';
@@ -1494,29 +1493,39 @@ function startAmbientHearts() {
         hearts = container.getElementsByClassName('ambient-heart');
     }
 
+    // KUNCI UTAMA 2: Jalankan trigger pertama secara instan untuk semua partikel dengan delay acak
+    // Ini solusi biar pas halaman dibuka langsung muncul, gak perlu nunggu interval kosong!
+    for (let i = 0; i < hearts.length; i++) {
+        pemicuAnimasiHati(hearts[i], true); // true artinya dikasih delay acak di awal
+    }
+
     let index = 0;
-    
-    // Jalankan interval dengan jeda 2.5 detik sekali biar kesannya tenang, sepi, dan romantis
+    // Interval ini bertugas untuk me-recycle (memutar ulang) hati yang sudah selesai melayang
     heartsInterval = setInterval(() => {
-        const currentHeart = hearts[index];
-        
-        if (currentHeart) {
-            // Matikan animasi lama dulu dengan paksa (reset state)
-            currentHeart.style.animation = 'none';
-            void currentHeart.offsetWidth; // Trik trigger reflow instan tanpa lag
-
-            // Atur ulang posisi horizontal acak (%) dan ukuran acak (kecil semacam debu anggun)
-            currentHeart.style.left = `${Math.random() * 90 + 5}%`;
-            currentHeart.style.fontSize = `${8 + Math.random() * 5}px`;
-
-            // Jalankan animasi baru secara halus dengan durasi melayang lambat (10 - 13 detik)
-            const duration = 10 + Math.random() * 3;
-            currentHeart.style.animation = `floatUpUltra ${duration}s linear forwards`;
+        if (hearts[index]) {
+            pemicuAnimasiHati(hearts[index], false); // false artinya langsung jalan tanpa delay tambahan
         }
-
-        // Bergantian ke partikel berikutnya (looping index 0, 1, 2, 3)
         index = (index + 1) % hearts.length;
-    }, 2500); 
+    }, 2000); // Dijamin sepi, estetik, dan lancar jaya
+}
+
+// FUNGSI BANTUAN BARU: Untuk mengontrol pergerakan murni GPU
+function pemicuAnimasiHati(heartElement, isAwal = false) {
+    if (!heartElement) return;
+    
+    heartElement.style.animation = 'none';
+    void heartElement.offsetWidth; // Trik sakti mereset animasi CSS
+
+    // Set posisi horizontal dan ukuran acak (semacam kunang-kunang kecil)
+    heartElement.style.left = `${Math.random() * 90 + 5}%`;
+    heartElement.style.fontSize = `${8 + Math.random() * 6}px`;
+
+    const duration = 10 + Math.random() * 4; // Lambat dan anggun (10s - 14s)
+    
+    // Kalau baru pertama kali dimuat, kasih delay minus acak biar sebarannya langsung merata di layar
+    const delay = isAwal ? `-${Math.random() * 10}s` : '0s';
+    
+    heartElement.style.animation = `floatUpUltra ${duration}s ${delay} linear infinite`;
 }
 
 function stopAmbientHearts() {
@@ -1524,12 +1533,11 @@ function stopAmbientHearts() {
         clearInterval(heartsInterval); 
         heartsInterval = null; 
     }
-    // Sembunyikan semua partikel saat pindah halaman agar GPU istirahat total
     const container = document.getElementById('page-5');
     if (container) {
         const hearts = container.getElementsByClassName('ambient-heart');
-        for (let heart of hearts) {
-            heart.style.animation = 'none';
+        for (let i = 0; i < hearts.length; i++) {
+            hearts[i].style.animation = 'none';
         }
     }
 }
