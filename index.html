@@ -49,7 +49,7 @@
             /* Dikunci di awal */
         }
 
-/* ==================== GLOBAL AMBIENT LOVE PARTICLES (OPTIMASI ULTRA) ==================== */
+/* ==================== GLOBAL AMBIENT LOVE PARTICLES (ULTRA SMOOTH) ==================== */
         .global-heart-container {
             position: fixed;
             inset: 0;
@@ -62,64 +62,60 @@
             position: absolute;
             color: var(--accent-pink);
             opacity: 0;
-            font-size: var(--p-size, 14px);
-            /* Memaksa browser mengunci layer ke hardware acceleration semenjak element di-create */
+            /* 1. KECILIN UKURAN: Kita kunci batas defaultnya kecil (8px - 12px) di JavaScript nanti */
+            font-size: var(--p-size, 10px); 
             will-change: transform; 
             transform: translate3d(0, 0, 0);
         }
 
-        /* Gerakan partikel naik dari bawah ke atas */
         .heart-up {
-            /* 1. UBAH KE LINEAR: Menghilangkan kalkulasi matematika kurva yang berat di HP */
-            animation: floatParticleUp var(--p-duration, 10s) linear infinite;
+            /* 2. TIMING FUNCTION LINEAR: Biar pergerakan GPU konstan tanpa beban hitung akselerasi */
+            animation: floatParticleUp var(--p-duration, 15s) linear infinite;
             animation-delay: var(--p-delay, 0s);
         }
 
-        /* Gerakan partikel turun dari atas ke bawah */
         .heart-down {
-            /* 1. UBAH KE LINEAR: Menghilangkan kalkulasi matematika kurva yang berat di HP */
-            animation: floatParticleDown var(--p-duration, 10s) linear infinite;
+            animation: floatParticleDown var(--p-duration, 15s) linear infinite;
             animation-delay: var(--p-delay, 0s);
         }
 
+        /* 3. HAPUS ROTATE: Murni gerakan lurus naik/turun lambat + geser sedikit (drift) biar super enteng */
         @keyframes floatParticleUp {
             0% {
-                /* 2. PINDAHKAN ATURAN AWAL POSISI KE TRANSLATE3D: Biar murni diproses chip grafis HP sejak persen ke-0 */
-                transform: translate3d(0, 105vh, 0) rotate(0deg);
+                transform: translate3d(0, 105vh, 0);
                 opacity: 0;
             }
-            10% {
-                opacity: var(--p-opacity, 0.4);
+            15% {
+                opacity: var(--p-opacity, 0.25);
             }
-            90% {
-                opacity: var(--p-opacity, 0.4);
+            85% {
+                opacity: var(--p-opacity, 0.25);
             }
             100% {
-                transform: translate3d(var(--p-drift, 40px), -10vh, 0) rotate(360deg);
+                transform: translate3d(var(--p-drift, 20px), -5vh, 0);
                 opacity: 0;
             }
         }
 
         @keyframes floatParticleDown {
             0% {
-                /* 2. PINDAHKAN ATURAN AWAL POSISI KE TRANSLATE3D */
-                transform: translate3d(0, -10vh, 0) rotate(0deg);
+                transform: translate3d(0, -5vh, 0);
                 opacity: 0;
             }
-            10% {
-                opacity: var(--p-opacity, 0.4);
+            15% {
+                opacity: var(--p-opacity, 0.25);
             }
-            90% {
-                opacity: var(--p-opacity, 0.4);
+            85% {
+                opacity: var(--p-opacity, 0.25);
             }
             100% {
-                transform: translate3d(var(--p-drift, -40px), 105vh, 0) rotate(-360deg);
+                transform: translate3d(var(--p-drift, -20px), 105vh, 0);
                 opacity: 0;
             }
         }
 
         /* Optimasi Kinerja Animasi Bunga Jatuh Berputar */
-        .falling-flower {
+        /* .falling-flower {
             position: fixed;
             top: -50px;
             z-index: 99;
@@ -1046,32 +1042,32 @@
 
                 const kontenSurat = "Hai Cantik nya dudut! \nSelamat ulang tahun ya! Di hari spesial bertambahnya usiamu ini, dudut benar benar bersyukur karena Tuhan udah ngelahirin ena ke dunia, dan mempertemukan kita. Makasih ya udah jadi pacar (soon haha), sahabat, sekaligus support system terbaik selama ini. Jangan pernah bosen dengan segala kerandom an dudut, ya. Semoga impian ena satu per satu tercapai di tahun ini, dimudahkan segala urusannya, dan selalu dikelilingi kebahagiaan. Dudut bakal selalu ada di sini buat nemenin setiap proses ena. \nMungkin saat ini bukan barang mewah dalam kotak pita yang bisa dudut kasih, tapi lewat setiap halaman digital di layar ini, dudut merangkai semua rasa syukur dan kenangan kita khusus buat ena. \n\n-Happy birthday, My Favorite Person!";
 
-/* ==================== GENERATE BACKGROUND PARTICLES (ULTRA LIGHTWEIGHT) ==================== */
+/* ==================== GENERATE BACKGROUND PARTICLES (SUPER MOBILE FRIENDLY) ==================== */
 function generateGlobalParticles() {
     const container = document.getElementById('global-particles');
     if (!container) return;
     
     const fragment = document.createDocumentFragment();
-    // Turunkan ke 12 untuk mobile. Di layar HP yang kecil, 12 sudah terlihat sangat cukup
-    const totalParticles = 12; 
+    
+    // KUNCI UTAMA 1: Kurangi jumlah ke 8 saja. Di HP ini udah pas, ga sepi dan ga bikin lemot
+    const totalParticles = 8; 
 
     for (let i = 0; i < totalParticles; i++) {
         const particle = document.createElement('div');
         const isUp = i % 2 === 0;
 
         particle.className = `heart-particle ${isUp ? 'heart-up' : 'heart-down'}`;
-        
-        // KUNCI UTAMA 1: Menggunakan inline SVG lingkaran/bulatan blur pink estetis (jauh lebih ringan dari karakter teks font)
-        particle.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 10 10">
-            <circle cx="5" cy="5" r="4" fill="#f7cad0" opacity="0.6"/>
-        </svg>`;
+        particle.innerHTML = '♥';
 
-        // Variasi style acak menggunakan CSS Variables
-        particle.style.setProperty('--p-size', `${6 + Math.random() * 8}px`); // Ukuran diperkecil (6px - 14px) biar hemat memori
-        particle.style.setProperty('--p-duration', `${10 + Math.random() * 6}s`); // Diperlambat (10s - 16s) agar beban GPU makin enteng
-        particle.style.setProperty('--p-delay', `${Math.random() * -12}s`);
-        particle.style.setProperty('--p-opacity', `${0.1 + Math.random() * 0.2}`);
-        particle.style.setProperty('--p-drift', `${(Math.random() * 60) - 30}px`);
+        // KUNCI UTAMA 2: PERKECIL UKURAN (Cuma 6px sampai 10px, kecil semacam kunang-kunang estetik)
+        particle.style.setProperty('--p-size', `${6 + Math.random() * 4}px`); 
+        
+        // KUNCI UTAMA 3: PERLAMBAT DURASI (Dibuat lambat banget antara 14 sampai 20 detik per rute)
+        particle.style.setProperty('--p-duration', `${14 + Math.random() * 6}s`); 
+        
+        particle.style.setProperty('--p-delay', `${Math.random() * -15}s`);
+        particle.style.setProperty('--p-opacity', `${0.15 + Math.random() * 0.15}`); // Transparansi lembut
+        particle.style.setProperty('--p-drift', `${(Math.random() * 40) - 20}px`); // Efek goyang dikit aja biar stabil
         
         particle.style.left = `${Math.random() * 100}%`;
 
@@ -1081,14 +1077,10 @@ function generateGlobalParticles() {
     container.appendChild(fragment);
 }
 
-// Jalankan saat kondisi browser benar-benar rileks
-if (document.readyState === 'complete') {
-    generateGlobalParticles();
-} else {
-    window.addEventListener('load', generateGlobalParticles);
-}
-
-
+// Jalankan dengan aman setelah window load penuh biar ga rebutan memori sama animasi halaman awal
+window.addEventListener('load', () => {
+    setTimeout(generateGlobalParticles, 500);
+});
 
                 /* ==================== GLOBAL UTILITIES ==================== */
                 function switchPage(fromId, toId, displayMode = 'buka-flex') {
