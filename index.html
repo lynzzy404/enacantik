@@ -313,25 +313,34 @@
             box-shadow: 0 0 8px rgba(198, 117, 112, 0.5);
         }
 
-        /* Page 5 Ambient Hearts */
-        .ambient-heart {
-            position: fixed;
-            bottom: -50px;
-            pointer-events: none;
-            color: var(--accent-pink);
-            font-size: 20px;
-            opacity: 0.6;
-            animation: floatUp linear forwards;
-            z-index: 25;
-        }
+.ambient-heart {
+    position: absolute;
+    bottom: -20px;
+    color: var(--accent-pink, #f7cad0);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+    /* PENTING: Aktifkan akselerasi hardware ponsel */
+    will-change: transform;
+}
 
-        @keyframes floatUp {
-            to {
-                transform: translateY(-115vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
+@keyframes floatUp {
+    0% {
+        transform: translate3d(0, 0, 0);
+        opacity: 0;
+    }
+    15% {
+        opacity: 0.3; /* Transparansi lembut biar ga sakit mata */
+    }
+    85% {
+        opacity: 0.3;
+    }
+    100% {
+        /* Naik sejauh -105% dari tinggi container Page 5 */
+        transform: translate3d(0, -105vh, 0);
+        opacity: 0;
+    }
+}
         #teks-surat {
             font-family: 'DM Sans', sans-serif;
             color: #fff0f3;
@@ -1459,30 +1468,61 @@ function typeWriter(teks, elemenId, btnId, kecepatan = 30) {
                     }, 1000);
                 }
 
-                /* ==================== PAGE 5: MAIN SCRAPBOOK ==================== */
-                let heartsInterval = null;
-                function startAmbientHearts() {
-                    if (heartsInterval) clearInterval(heartsInterval);
-                    heartsInterval = setInterval(() => {
-                        const heart = document.createElement('div');
-                        heart.className = 'ambient-heart';
-                        heart.style.left = Math.random() * 100 + 'vw';
-                        const size = 12 + Math.random() * 14;
-                        heart.innerHTML = `<span style="font-size: ${size}px;">♥</span>`;
+/* ==================== PAGE 5: MAIN SCRAPBOOK (OPTIMASI ANTI-LAG) ==================== */
+let heartsInterval = null;
+function startAmbientHearts() {
+    const container = document.getElementById('page-5');
+    if (!container) return;
 
-                        const duration = 5 + Math.random() * 6;
-                        heart.style.animation = `floatUp ${duration}s linear forwards`;
+    // Bersihkan interval lama jika ada
+    if (heartsInterval) clearInterval(heartsInterval);
 
-                        document.getElementById('page-5').appendChild(heart);
+    // KUNCI UTAMA: Kita naikkan timernya jadi 1500ms (1.5 detik) sekali muncul.
+    // Ini bikin partikel munculnya satu-satu secara lambat, dapet kesan "sepi", puitis, dan RAM HP super aman!
+    heartsInterval = setInterval(() => {
+        // Batasi agar total partikel ambient di Page 5 tidak menumpuk lebih dari 4 biji di layar
+        if (container.getElementsByClassName('ambient-heart').length >= 4) return;
 
-                        setTimeout(() => { heart.remove(); }, duration * 1000 + 500);
-                    }, 550);
-                }
+        const heart = document.createElement('div');
+        heart.className = 'ambient-heart';
+        
+        // 1. Ganti vw ke % biar browser mobile ga lelah ngitung layout viewport
+        heart.style.left = `${Math.random() * 100}%`;
+        
+        // 2. Langsung masukkan teks murni tanpa bungkus tag <span> lagi biar struktur DOM minimalis
+        heart.innerHTML = '♥';
 
-                function stopAmbientHearts() {
-                    if (heartsInterval) { clearInterval(heartsInterval); heartsInterval = null; }
-                }
+        // 3. Perkecil ukuran font default (8px - 14px) agar tampak seperti kunang-kunang estetik
+        const size = 8 + Math.random() * 6;
+        heart.style.fontSize = `${size}px`;
 
+        // 4. Buat durasi melayangnya sangat lambat (8 sampai 12 detik) biar anggun
+        const duration = 8 + Math.random() * 4;
+        heart.style.animation = `floatUp ${duration}s linear forwards`;
+
+        container.appendChild(heart);
+
+        // Hapus elemen dari HTML setelah animasi selesai agar tidak membebani memori
+        setTimeout(() => { 
+            if (heart.parentNode) heart.remove(); 
+        }, duration * 1000);
+    }, 1500); // Dijamin sepi, bersih, dan romantis
+}
+
+function stopAmbientHearts() {
+    if (heartsInterval) { 
+        clearInterval(heartsInterval); 
+        heartsInterval = null; 
+    }
+    // Bersihkan sisa partikel yang tertinggal saat pindah halaman biar HP rileks
+    const container = document.getElementById('page-5');
+    if (container) {
+        const sisaPartikel = container.getElementsByClassName('ambient-heart');
+        while(sisaPartikel.length > 0) {
+            sisaPartikel[0].remove();
+        }
+    }
+}
                 function kocokStoples() {
                     const jar = document.getElementById('jar-trigger');
                     const out = document.getElementById('text-alasan');
