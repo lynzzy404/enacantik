@@ -1472,6 +1472,11 @@ function typeWriter(teks, elemenId, btnId, kecepatan = 30) {
 let heartsInterval = null;
 
 function startAmbientHearts() {
+    // TRIK DARURAT: Jika lebar layar di bawah 768px (Mobile/HP), batalkan partikel demi kelancaran 60FPS
+    if (window.innerWidth < 768) {
+        console.log("Mode Mobile: Partikel dinonaktifkan agar transisi scrapbook super smooth.");
+        return; 
+    }
     const container = document.getElementById('page-5');
     if (!container) return;
 
