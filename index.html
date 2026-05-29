@@ -1049,31 +1049,45 @@
 
                 const kontenSurat = "Hai Cantik nya dudut! \nSelamat ulang tahun ya! Di hari spesial bertambahnya usiamu ini, dudut benar benar bersyukur karena Tuhan udah ngelahirin ena ke dunia, dan mempertemukan kita. Makasih ya udah jadi pacar (soon haha), sahabat, sekaligus support system terbaik selama ini. Jangan pernah bosen dengan segala kerandom an dudut, ya. Semoga impian ena satu per satu tercapai di tahun ini, dimudahkan segala urusannya, dan selalu dikelilingi kebahagiaan. Dudut bakal selalu ada di sini buat nemenin setiap proses ena. \nMungkin saat ini bukan barang mewah dalam kotak pita yang bisa dudut kasih, tapi lewat setiap halaman digital di layar ini, dudut merangkai semua rasa syukur dan kenangan kita khusus buat ena. \n\n-Happy birthday, My Favorite Person!";
 
-                /* ==================== GENERATE BACKGROUND PARTICLES (PERBAIKAN GLOBAL) ==================== */
-                function generateGlobalParticles() {
-                    const container = document.getElementById('global-particles');
-                    const totalParticles = 24; // Dioptimasi agar sangat ringan di mobile
+   /* ==================== GENERATE BACKGROUND PARTICLES (OPTIMASI MOBILE) ==================== */
+function generateGlobalParticles() {
+    const container = document.getElementById('global-particles');
+    if (!container) return;
+    
+    // 1. KUNCI UTAMA: Gunakan DocumentFragment agar manipulasi DOM hanya terjadi 1 kali, bukan 24 kali loop.
+    const fragment = document.createDocumentFragment();
+    const totalParticles = 16; // Diturunkan sedikit ke 16 (secara visual di HP sudah sangat ramai tapi hemat RAM)
 
-                    for (let i = 0; i < totalParticles; i++) {
-                        const particle = document.createElement('div');
-                        const isUp = i % 2 === 0; // Setengah melayang ke atas, setengah ke bawah
+    for (let i = 0; i < totalParticles; i++) {
+        const particle = document.createElement('div');
+        const isUp = i % 2 === 0;
 
-                        particle.className = `heart-particle ${isUp ? 'heart-up' : 'heart-down'}`;
-                        particle.innerHTML = '♥';
+        particle.className = `heart-particle ${isUp ? 'heart-up' : 'heart-down'}`;
+        particle.innerHTML = '♥';
 
-                        // Variasi style acak menggunakan CSS Variables (Sangat Ringan dibanding animasi JS)
-                        particle.style.setProperty('--p-size', `${8 + Math.random() * 12}px`);
-                        particle.style.setProperty('--p-duration', `${6 + Math.random() * 6}s`);
-                        particle.style.setProperty('--p-delay', `${Math.random() * -10}s`);
-                        particle.style.setProperty('--p-opacity', `${0.15 + Math.random() * 0.25}`);
-                        particle.style.setProperty('--p-drift', `${(Math.random() * 120) - 60}px`);
-                        particle.style.left = `${Math.random() * 100}vw`;
+        // Variasi style acak menggunakan CSS Variables
+        particle.style.setProperty('--p-size', `${10 + Math.random() * 8}px`); // Skala ukuran di-stabilkan
+        particle.style.setProperty('--p-duration', `${8 + Math.random() * 6}s`); // Sedikit diperlambat agar kerja GPU enteng
+        particle.style.setProperty('--p-delay', `${Math.random() * -12}s`);
+        particle.style.setProperty('--p-opacity', `${0.1 + Math.random() * 0.2}`);
+        particle.style.setProperty('--p-drift', `${(Math.random() * 80) - 40}px`);
+        
+        // 2. KUNCI UTAMA: Ubah vw menjadi % biasa agar engine browser mobile tidak mendeteksi reflow layout terus-menerus
+        particle.style.left = `${Math.random() * 100}%`;
 
-                        container.appendChild(particle);
-                    }
-                }
-                // Jalankan langsung saat script di-load
-                generateGlobalParticles();
+        // Masukkan ke penampung memori sementara
+        fragment.appendChild(particle);
+    }
+    
+    // Kirimkan sekaligus semua partikel ke HTML nyata
+    container.appendChild(fragment);
+}
+
+// 3. KUNCI UTAMA: Bungkus pemicunya dengan requestAnimationFrame agar dieksekusi setelah halaman utama selesai dirender penuh
+requestAnimationFrame(() => {
+    generateGlobalParticles();
+});
+
 
 
                 /* ==================== GLOBAL UTILITIES ==================== */
