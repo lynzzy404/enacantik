@@ -313,36 +313,34 @@
             box-shadow: 0 0 8px rgba(198, 117, 112, 0.5);
         }
 
-.ambient-heart {
-    position: absolute;
-    /* Mulai dari luar layar bawah agar tidak mengganggu layout utama */
-    bottom: -30px; 
-    color: var(--accent-pink, #f7cad0);
-    opacity: 0;
-    pointer-events: none;
-    z-index: 2;
-    /* Memaksa HP membuat layer GPU independen sejak awal */
-    will-change: transform; 
-    transform: translate3d(0, 0, 0); 
-}
+/* Page 5 Ambient Hearts - DIOPTIMASI GPU */
+        .ambient-heart {
+            position: fixed;
+            bottom: -30px; 
+            color: var(--accent-pink, #f7cad0);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 25;
+            will-change: transform; 
+            transform: translate3d(0, 0, 0); 
+        }
 
-@keyframes floatUpUltra {
-    0% {
-        transform: translate3d(0, 0, 0);
-        opacity: 0;
-    }
-    10% {
-        opacity: 0.25; /* Transparansi tipis estetik */
-    }
-    85% {
-        opacity: 0.25;
-    }
-    100% {
-        /* Melayang lurus ke atas sejauh tinggi layar minus sedikit */
-        transform: translate3d(0, -108vh, 0);
-        opacity: 0;
-    }
-}
+        @keyframes floatUpUltra {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.35; /* Anggun, tidak terlalu menusuk mata */
+            }
+            85% {
+                opacity: 0.35;
+            }
+            100% {
+                transform: translate3d(0, -110vh, 0) rotate(360deg);
+                opacity: 0;
+            }
+        }
         #teks-surat {
             font-family: 'DM Sans', sans-serif;
             color: #fff0f3;
@@ -1470,7 +1468,7 @@ function typeWriter(teks, elemenId, btnId, kecepatan = 30) {
                     }, 1000);
                 }
 
-/* ==================== PAGE 5: MAIN SCRAPBOOK (FIXED POOLING) ==================== */
+/* ==================== PAGE 5: MAIN SCRAPBOOK (FIXED SMOOTH POOLING) ==================== */
 let heartsInterval = null;
 
 function startAmbientHearts() {
@@ -1479,11 +1477,11 @@ function startAmbientHearts() {
 
     if (heartsInterval) clearInterval(heartsInterval);
 
-    // KUNCI UTAMA 1: Langsung buat 6 elemen hati di awal secara instan begitu fungsi dipanggil
+    // 1. Siapkan pool 6 elemen hati di awal (Hanya digenerate SEKALI seumur hidup)
     let hearts = container.getElementsByClassName('ambient-heart');
     if (hearts.length === 0) {
         const fragment = document.createDocumentFragment();
-        for (let i = 0; i < 6; i++) { // Kita pakai 6 biji biar pas tingkat kerameannya
+        for (let i = 0; i < 6; i++) { 
             const heart = document.createElement('div');
             heart.className = 'ambient-heart';
             heart.innerHTML = '♥';
@@ -1493,36 +1491,35 @@ function startAmbientHearts() {
         hearts = container.getElementsByClassName('ambient-heart');
     }
 
-    // KUNCI UTAMA 2: Jalankan trigger pertama secara instan untuk semua partikel dengan delay acak
-    // Ini solusi biar pas halaman dibuka langsung muncul, gak perlu nunggu interval kosong!
+    // 2. Langsung sebar merata di layar saat pertama masuk biar gak kosong nunggu interval
     for (let i = 0; i < hearts.length; i++) {
-        pemicuAnimasiHati(hearts[i], true); // true artinya dikasih delay acak di awal
+        pemicuAnimasiHati(hearts[i], true); 
     }
 
     let index = 0;
-    // Interval ini bertugas untuk me-recycle (memutar ulang) hati yang sudah selesai melayang
+    // 3. Interval bertugas mendaur ulang hati secara bergantian setiap 2 detik
     heartsInterval = setInterval(() => {
         if (hearts[index]) {
-            pemicuAnimasiHati(hearts[index], false); // false artinya langsung jalan tanpa delay tambahan
+            pemicuAnimasiHati(hearts[index], false); 
         }
         index = (index + 1) % hearts.length;
-    }, 2000); // Dijamin sepi, estetik, dan lancar jaya
+    }, 2000); 
 }
 
-// FUNGSI BANTUAN BARU: Untuk mengontrol pergerakan murni GPU
+// LINGKUP ENGINE BARU: Mengontrol pergerakan konstan ramah GPU mobile
 function pemicuAnimasiHati(heartElement, isAwal = false) {
     if (!heartElement) return;
     
     heartElement.style.animation = 'none';
-    void heartElement.offsetWidth; // Trik sakti mereset animasi CSS
+    void heartElement.offsetWidth; // Reset state CSS tanpa bikin lag browser
 
-    // Set posisi horizontal dan ukuran acak (semacam kunang-kunang kecil)
+    // Sebaran horizontal acak (%) dan ukuran bervariasi estetik kunang-kunang
     heartElement.style.left = `${Math.random() * 90 + 5}%`;
-    heartElement.style.fontSize = `${8 + Math.random() * 6}px`;
+    heartElement.style.fontSize = `${10 + Math.random() * 8}px`;
 
-    const duration = 10 + Math.random() * 4; // Lambat dan anggun (10s - 14s)
+    const duration = 10 + Math.random() * 4; // Kecepatan konstan melayang anggun (10s - 14s)
     
-    // Kalau baru pertama kali dimuat, kasih delay minus acak biar sebarannya langsung merata di layar
+    // Trik delay negatif: jika baru load, partikel langsung lompat di posisi acak layar
     const delay = isAwal ? `-${Math.random() * 10}s` : '0s';
     
     heartElement.style.animation = `floatUpUltra ${duration}s ${delay} linear infinite`;
